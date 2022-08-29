@@ -1,0 +1,42 @@
+#include <iostream>
+
+using namespace std
+
+class ClasseA {
+public:
+    void afficher() { cout << "Afficher de ClasseA" << endl;}
+  
+};
+
+int Classe::instanceCount = 0;
+
+int main(int argc, char* argv[]){
+    return 0;
+}
+
+/*
+class Classe {
+private:
+    static int instanceCount;
+
+public:
+    Classe() {instanceCount++; }
+    ~Classe() {instanceCount --; }
+    static int getInstanceCount() {
+        return instanceCount;
+    }
+  
+};
+
+int Classe::instanceCount = 0;
+
+int main(int argc, char* argv[]){
+    Classe* instanceA = new Classe();
+    Classe* instanceB = new Classe();
+    Classe* instanceC = new Classe(); 
+
+    delete instanceA;
+    delete instanceC;
+    int count = Classe::getInstanceCount();
+    return 0;
+}*/
