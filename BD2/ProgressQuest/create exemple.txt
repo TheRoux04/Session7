@@ -1,0 +1,277 @@
+DROP DATABASE IF EXIST Communism
+
+
+--NOTE: On ne se souviens pu c'etait ou le Directory en Windows
+CREATE DATABASE Communism
+ON PRIMARY(
+NAME =N'Communism', FILENAME = N'/home/kibiii/Document/Clo/BD/Communism.mdf', SIZE = 8MB , FILEGROWTH = 32MB
+)
+LOG ON(
+NAME = N'Communism_log', FILENAME = N'/home/kibiii/Document/Clo/BD/Communism_log.ldf', SIZE = 8MB, FILEGROWTH = 32MB
+)
+
+--99 little bugs in the code. 99 little bugs in the code. 
+--Take one down, patch it around. 127 little bugs in the code
+--                            -Albert Einstein 1915
+
+USE Communism
+
+--Table contenant les joueurs ainsi que leurs caractéristiques
+CREATE TABLE Players(
+    ID int NOT NULL IDENTITY(1,1),
+    Name nvarchar(30) NOT NULL,
+    XP int DEFAULT(0) CHECK (XP >= 0),
+    Level int DEFAULT(0) CHECK (Level >= 0),
+    MaxHp int DEFAULT(100) CHECK (MaxHp >= 0),
+    HP int DEFAULT(100) CHECK (HP <= 100 AND HP >= 0),
+    MaxMp int DEFAULT(100) CHECK (MaxMp >= 0),
+    Mp int DEFAULT(100) CHECK (Mp >= 0 AND Mp <= 100),
+    Strength int DEFAULT(1) CHECK (Strength > 0),
+    Dexterity int DEFAULT(1) CHECK (Dexterity > 0),
+    Resistance int DEFAULT(1) CHECK (Resistance > 0),
+    Constitution int DEFAULT(1) CHECK (Constitution > 0),
+    IsPlayed binary(1) DEFAULT(0),
+    ClassID int NOT NULL,
+    RaceID int NOT NULL, 
+    
+    CONSTRAINT PK_Players PRIMARY KEY CLUSTERED (ID),
+)
+
+--Les statistiques des Quests disponibles pour les joueur
+CREATE TABLE Quest(
+    ID int NOT NULL IDENTITY(1,1),
+    Name nvarchar(30) NOT NULL,
+    Difficulty int NOT NULL CHECK(Difficulty > 0),
+    Gold int NOT NULL CHECK(Gold >= 0),
+    XP int NOT NULL CHECK (XP >= 0),
+    Description ntext NOT NULL,
+    
+    CONSTRAINT PK_Quest PRIMARY KEY CLUSTERED (ID)
+)
+
+--Les quêtes dont les joueurs peuvent faire partie
+CREATE TABLE PlayerQuest(
+    PlayerID int NOT NULL,
+    QuestID int NOT NULL,
+    IsEnded binary(1) DEFAULT(0),
+)
+
+--Equipement des joueurs qui sont présentement équipés
+CREATE TABLE EquipEquiped(
+    PlayerID int NOT NULL,
+    EquipementID int NOT NULL,
+)
+
+--Equipement disponible pour un Classe en question
+CREATE TABLE EquipClass(
+    ClassID int NOT NULL,
+    EquipID int NOT NULL,
+)
+
+--Les loots qui sont en possession par un joueur
+CREATE TABLE LootOwned(
+    PlayerID int NOT NULL,
+    LootID int NOT NULL,
+)
+
+--Classes disponibles qui défini la classe d’un joueur
+CREATE TABLE Class(
+    ID int NOT NULL IDENTITY(1,1),
+    Name ntext NOT NULL,
+    
+    CONSTRAINT PK_Class PRIMARY KEY CLUSTERED (ID)
+)
+
+--Les races disponibles qui définit le joueur
+CREATE TABLE Race(
+    ID int NOT NULL IDENTITY(1,1),
+    Name ntext NOT NULL,
+    BonusID int NOT NULL,
+    
+    CONSTRAINT PK_Race PRIMARY KEY CLUSTERED (ID)
+)
+
+--Statistiques de bonus pour des equipements
+CREATE TABLE Bonus(
+    ID int NOT NULL IDENTITY(1,1),
+    BonusAmount int NOT NULL CHECK (BonusAmount >= 0),
+    BonusTypeID int NOT NULL,
+    EquipID int NOT NULL,
+    
+    CONSTRAINT PK_Bonus PRIMARY KEY CLUSTERED (ID)
+)
+
+--======================================
+--Loots dont il est possible de trouver dans un Destination en particulier
+CREATE TABLE DestinationLoot(
+    DestID int NOT NULL,
+    LootID int NOT NULL,
+    Probability tinyint DEFAULT(0),
+    
+    CONSTRAINT PK_DestinationLoot PRIMARY KEY CLUSTERED (DestID, LootID)
+)
+
+--Destination qui sera visité par les joueurs avec ces caractéristiques
+CREATE TABLE Destination(
+    ID int NOT NULL,
+    Name nvarchar(30) DEFAULT(''),
+    NbEnnemi int DEFAULT 0,
+    Difficulty int DEFAULT 1,
+    CatID int,
+    BossID int,
+    
+    CONSTRAINT PK_Destination PRIMARY KEY CLUSTERED (ID)
+)
+
+--Catégories d’ennemis (ex: goblin, élémentaire, etc)
+CREATE TABLE Categories(
+    ID int Not Null,
+    Type ntext DEFAULT(''),
+    
+    CONSTRAINT PK_Categories PRIMARY KEY CLUSTERED (ID)
+)
+
+--Table contenant les ennemis ainsi que leurs statistiques
+CREATE TABLE Ennemis(
+    ID int NOT NULL,
+    Name nvarchar(30) DEFAULT(''),
+    Strength int DEFAULT(1),
+    Dexterity int DEFAULT(1),
+    Resistance int DEFAULT(1),
+    MaxHp int DEFAULT(100),
+    IsBoss binary(1) DEFAULT(0),
+    Level int DEFAULT 1,
+    CatID int NOT NULL,
+    
+    CONSTRAINT PK_Ennemis PRIMARY KEY CLUSTERED (ID)
+)
+
+--Statistiques de la bataille en cours
+CREATE TABLE Fight(
+    PlayerID int NOT NULL,
+    EnnID int NOT NULL,
+    EnnHp int NULL,
+    Probability tinyint DEFAULT(0),
+    
+    CONSTRAINT PK_Fight_EnnIDEnnHp PRIMARY KEY CLUSTERED (PlayerID, EnnID)
+)
+
+--Loots qu’un ennemie peut dropper
+CREATE TABLE EnnemisLoot(
+    EnnemyID int NOT NULL,
+    LootID int NOT NULL,
+    Probability tinyint NULL
+    
+    CONSTRAINT PK_EnnmisLoot_EnnIDLootID PRIMARY KEY CLUSTERED (EnnemyID, LootID)
+)
+
+--Statistiques des loots
+CREATE TABLE Loot(
+    ID int NOT NULL IDENTITY(1,1),
+    Name nvarchar(30),
+    Value int DEFAULT(0),
+    
+    CONSTRAINT PK_Loot PRIMARY KEY CLUSTERED (ID)
+)
+
+--Emplacement possible pour un équipement
+CREATE TABLE EquipEmplacement(
+    ID int NOT NULL IDENTITY(1,1),
+    Name nvarchar(30) DEFAULT(''),
+    
+    CONSTRAINT PK_EquipEmplacement PRIMARY KEY CLUSTERED (ID)
+)
+
+--Les statistiques des équipements possible pour les joueurs
+CREATE TABLE Equipement(
+    ID int NOT NULL IDENTITY(1,1),
+    Name nvarchar(30),
+    Price int DEFAULT(0),
+    EmplacementID int NOT NULL
+    
+    CONSTRAINT PK_Equipement PRIMARY KEY CLUSTERED (ID)
+)
+
+--Bonus pour un équipement en question
+CREATE TABLE  EquipBonus(
+    ID int NOT NULL IDENTITY(1,1),
+    BonusTypeID int NOT NULL,
+    EquipID int NOT NULL,
+    BonusAmount int NOT NULL CHECK (BonusAmount >= 0),
+    
+    CONSTRAINT PK_EquipBonus PRIMARY KEY CLUSTERED (ID)
+    
+)
+
+--Les types de bonus possible
+CREATE TABLE BonusType(
+    ID int NOT NULL IDENTITY(1,1),
+    BonusName nvarchar(15) NOT NULL DEFAULT(''),
+    
+    CONSTRAINT PK_BonusType_ID PRIMARY KEY CLUSTERED (ID)
+)
+
+--Table de loot a obtenir afin de réussir un quest
+CREATE TABLE QuestLootToObtain(
+    QuestID int NOT NULL,
+    LootID int NOT NULL,
+    Quantity int DEFAULT(0) CHECK (Quantity >= 0)
+)
+
+Go
+
+--Creation des foreign keys avec leur liaisons respectives 
+ALTER TABLE dbo.DestinationLoot WITH NOCHECK 
+    ADD
+    CONSTRAINT FK_DestiLoot_DestID FOREIGN KEY (DestID) REFERENCES dbo.Destination(ID)
+    
+ALTER TABLE dbo.EquipBonus
+    ADD 
+    CONSTRAINT FK_EquipBonus_BonusTypeID FOREIGN KEY (BonusTypeID) REFERENCES dbo.BonusType(ID),
+    CONSTRAINT FK_EquipBonus_EquipId FOREIGN KEY (EquipID) REFERENCES dbo.Equipement(ID)
+    
+ALTER TABLE dbo.QuestLootToObtain
+    ADD
+    CONSTRAINT FK_QuestLootToObtain_QuestID FOREIGN KEY (QuestID) REFERENCES dbo.Quest(ID),
+    CONSTRAINT FK_QuestLootToObtain_LootID FOREIGN KEY (LootID) REFERENCES dbo.Loot(ID)
+
+ALTER TABLE dbo.Equipement WITH NOCHECK
+    ADD
+    CONSTRAINT FK_Equipement_EmplacementID FOREIGN KEY (EmplacementID) REFERENCES dbo.EquipEmplacement(ID)
+    
+ALTER TABLE dbo.Ennemis WITH NOCHECK
+    ADD
+    CONSTRAINT FK_Ennemis_CatID FOREIGN KEY (CatID) REFERENCES dbo.Categories(ID)
+--=================
+
+--*FONCTIONNELLE*
+
+ALTER TABLE dbo.Players WITH NOCHECK
+    ADD 
+    CONSTRAINT FK_Players_Class FOREIGN KEY (ClassID) REFERENCES dbo.Class(ID),
+    CONSTRAINT FK_Players_Race FOREIGN KEY (RaceID) REFERENCES dbo.Race(ID)
+    
+ALTER TABLE dbo.PlayerQuest WITH NOCHECK
+    ADD 
+    CONSTRAINT FK_PlayersQuest_PlayerID FOREIGN KEY (PlayerID) REFERENCES dbo.Players(ID),
+    CONSTRAINT FK_PlayersQuest_QuestID FOREIGN KEY (QuestID) REFERENCES dbo.Quest(ID)
+
+ALTER TABLE dbo.EquipEquiped WITH NOCHECK
+    ADD 
+    CONSTRAINT FK_EquipEquiped_PlayerID FOREIGN KEY (PlayerID) REFERENCES dbo.Players(ID),
+    CONSTRAINT FK_EquipEquiped_EquipementID FOREIGN KEY (EquipementID) REFERENCES dbo.Equipement(ID)
+
+ALTER TABLE dbo.EquipClass WITH NOCHECK
+    ADD 
+    CONSTRAINT FK_EquipClass_ClassID FOREIGN KEY (ClassID) REFERENCES dbo.Class(ID),
+    CONSTRAINT FK_EquipClass_EquipID FOREIGN KEY (EquipID) REFERENCES dbo.Equipement(ID)
+    
+ALTER TABLE dbo.LootOwned WITH NOCHECK
+    ADD 
+    CONSTRAINT FK_LootOwned_PlayerID FOREIGN KEY (PlayerID) REFERENCES dbo.Players(ID),
+    CONSTRAINT FK_LootOwned_LootID FOREIGN KEY (LootID) REFERENCES dbo.Loot(ID)
+
+ALTER TABLE dbo.Bonus WITH NOCHECK
+    ADD 
+    CONSTRAINT FK_Bonus_BonusTypeID FOREIGN KEY (BonusTypeID) REFERENCES dbo.BonusType(ID),
+    -- A VOIR: CONSTRAINT FK_Bonus_EquipID FOREIGN KEY (EquipID) REFERENCES dbo.Equip(ID)
