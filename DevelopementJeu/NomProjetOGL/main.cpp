@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_main.h>
-//#include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_opengl.h>
 
 
 //NOTES DE COURS SUR etudions.ca
@@ -13,11 +13,12 @@ int main(int argc, char* argv[]) {
   SDL_Renderer* sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
   //SDL_GLContext glContext = SDL_GL_CreateContext(sdlWindow);
+
   //glClear(GL_COLOR_BUFFER_BIT);
 
   bool isOpen = true;
   while (isOpen){
-    //GGestion des  événements
+    //Gestion des  événements
     while (SDL_PollEvent(&sdlEvent)) {
       switch (sdlEvent.type){
       case SDL_QUIT:
@@ -34,8 +35,6 @@ int main(int argc, char* argv[]) {
   }
   
   
-
-
 
   //SDL_GL_SwapWindow(sdlWindow);
   //SDL_GL_DeleteContext(sdlWindow);
