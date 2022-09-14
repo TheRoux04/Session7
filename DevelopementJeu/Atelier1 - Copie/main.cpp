@@ -3,8 +3,8 @@
 
 int main(int argc, char* argv[]){
     Application application;
-    for (int i = 0; i < 1e3; i++) 
-    application.addWindow(new SDLRenderer());
+    application.addWindow(new SDLRenderer("A"));
+    application.addWindow(new SDLRenderer("B"));
     
     application.start();
 

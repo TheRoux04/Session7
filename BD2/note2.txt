@@ -1,0 +1,33 @@
+Vues : Une instance SELECT statique
+
+Fonction
+	Scalaire : Retourne une seule valeur
+	Table en ligne : RETURS Table --------- Peut y inserer des parametres
+	Multi-instruction
+
+Procédure stocké : Recois des paramètres
+			Traitement
+			Derniere ligne: 
+				delete, update, insert : retourne le nombre d'enregistrement affecter
+				SELECT : table en ligne
+
+
+
+
+dim rs as ADODB.Recordset
+set rs = new ADODB.Recordset
+dom conn as ADODB.Connection	Objet de connexion partagé dans le formulaire.
+Set conn = new ADODB.Connection
+    conn.Open "Provider='SQLOLEDB'; Data Source='Nom du serveur'; Initial Catalog = 'nom table de base'; User id = 'Nom table'; Password = 'Mot de passe'"
+
+// a partir de vue
+rs.Open "Select FilmCode, FilmTitre FROM VueFilms ORDER BY FilmTitre", conn
+
+//a partir d'une fonction avec paramètre
+rs.Open "SELECT * FROM fnlFilmsNationalite(2)", conn
+
+rs.Open "SELECT * FROM fnlFilmsNationalite(" & CStr(lstNationalite.value) & ")", conn
+
+//Executer du SQL pur
+
+conn.exec "INSERT INTO Distributions (DistCodeFilm, SistCodeActeur, DistRole) " & "VALUES (" & codeFilm & ", " & codeActeur & ", " & rvrev & "')"

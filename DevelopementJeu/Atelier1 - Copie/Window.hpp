@@ -23,7 +23,7 @@ public:
         sdlWindow = SDL_CreateWindow(title, x, y, width, height, flags);
     }
 
-    ~Window(){
+    virtual ~Window(){
         SDL_DestroyWindow(sdlWindow);
     }
 
