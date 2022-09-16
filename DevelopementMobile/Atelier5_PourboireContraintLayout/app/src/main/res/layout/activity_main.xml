@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/textView_price"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextNumber_price"
+        app:layout_constraintEnd_toStartOf="@+id/editTextNumber_price"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editTextNumber_price"
+        app:layout_constraintVertical_bias="0.461" />
+
+    <EditText
+        android:id="@+id/editTextNumber_price"
+        android:layout_width="221dp"
+        android:layout_height="61dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/toggleButton_taxes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread" />
+
+    <Spinner
+        android:id="@+id/spinner_people"
+        android:layout_width="138dp"
+        android:layout_height="56dp"
+        android:entries="@array/spinner2"
+        app:layout_constraintBottom_toTopOf="@+id/space"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/spinner_pourcentage"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_pourcentage" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton_taxes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOff="@string/togglebutton_taxes"
+        android:textOn="@string/togglebutton_taxes2"
+        app:layout_constraintBottom_toTopOf="@+id/spinner_pourcentage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editTextNumber_price"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNumber_price" />
+
+    <Spinner
+        android:id="@+id/spinner_pourcentage"
+        android:layout_width="138dp"
+        android:layout_height="56dp"
+        android:entries="@array/spinner"
+        app:layout_constraintBottom_toTopOf="@+id/spinner_people"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/toggleButton_taxes"
+        app:layout_constraintTop_toBottomOf="@+id/toggleButton_taxes" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Taxes :"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/toggleButton_taxes"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/toggleButton_taxes" />
+
+    <TextView
+        android:id="@+id/textView_Tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/textView_Tip"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/spinner_pourcentage"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="@+id/spinner_pourcentage" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/textView_people"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/spinner_people"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="@+id/spinner_people"
+        app:layout_constraintVertical_bias="0.526" />
+
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="217dp"
+        android:layout_height="60dp"
+        android:text="@string/button_submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/space"
+        app:layout_constraintVertical_bias="0.239" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="345dp"
+        android:layout_height="19dp"
+        android:layout_marginBottom="152dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
