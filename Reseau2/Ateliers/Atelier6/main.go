@@ -7,8 +7,11 @@ import (
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 10; i++ {
-		go estPremier()
+		go func() {
+			estPremier()
+		}()
 	}
 	var input string
 	fmt.Scanln(&input)
