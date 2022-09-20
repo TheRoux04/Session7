@@ -18,18 +18,6 @@ class MainActivity : AppCompatActivity() {
         var btnSubmit = findViewById<Button>(R.id.button_submit)
 
 
-        binding.clickButton.setOnClickListener {
-            val type = binding.beerChooserSpinner.selectedItem.toString()
-                .replaceFirstChar { it.lowercase(Locale.getDefault()) }
-            val intent = Intent(this, ResultActivity::class.java).apply {
-                putExtra("type", type)
-            }
-
-            startActivity(intent)
-        }
-
-
-
         btnSubmit.setOnClickListener {
             if (txtPrice.text.toString().equals("")) {
                 Toast.makeText(this, R.string.errorMontant, Toast.LENGTH_LONG).show()
@@ -48,15 +36,17 @@ class MainActivity : AppCompatActivity() {
 
                 price /= nbPeople
 
-                var text = "$price$"
-                Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+                var price = "$price$"
+                Toast.makeText(this, price, Toast.LENGTH_LONG).show()
+
+                val intent = Intent(this, ActivityResultat::class.java).apply {
+                    putExtra("price", price)
+                }
+
+                startActivity(intent)
             }
 
-            val intent = Intent(this, ActivityResultat::class.java).apply {
-                putExtra("price", price)
-            }
 
-            startActivity(intent)
         }
     }
 }
