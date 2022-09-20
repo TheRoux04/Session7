@@ -1,8 +1,10 @@
 package com.example.atelier5_pourboirecontraintlayout
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,7 +18,15 @@ class MainActivity : AppCompatActivity() {
         var btnSubmit = findViewById<Button>(R.id.button_submit)
 
 
+        binding.clickButton.setOnClickListener {
+            val type = binding.beerChooserSpinner.selectedItem.toString()
+                .replaceFirstChar { it.lowercase(Locale.getDefault()) }
+            val intent = Intent(this, ResultActivity::class.java).apply {
+                putExtra("type", type)
+            }
 
+            startActivity(intent)
+        }
 
 
 
@@ -42,6 +52,11 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show()
             }
 
+            val intent = Intent(this, ActivityResultat::class.java).apply {
+                putExtra("price", price)
+            }
+
+            startActivity(intent)
         }
     }
 }
