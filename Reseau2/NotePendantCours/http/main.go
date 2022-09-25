@@ -44,7 +44,7 @@ func ws(w http.ResponseWriter, r *http.Request) {
 }
 
 func gererConnection(w http.ResponseWriter, r *http.Request) {
-	vueRaw, _ := os.ReadFile("./views/index.html")
+	vueRaw, _ := os.ReadFile("./views/index2.html")
 	vue := string(vueRaw)
 	vue = strings.Replace(vue, "###TITRE###", "Blearg", 1)
 

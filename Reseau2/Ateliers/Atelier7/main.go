@@ -6,13 +6,14 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 var upgrader = websocket.Upgrader{}
 
 func main() {
-	http.HandleFunc("/", gererConnection)
+
+	http.HandleFunc("/numero1", numero1)
+	http.HandleFunc("/numero2", numero2)
 	http.HandleFunc("/ws", ws)
 
 	fileServer := http.FileServer(http.Dir("./assets"))
@@ -43,10 +44,17 @@ func ws(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func gererConnection(w http.ResponseWriter, r *http.Request) {
-	vueRaw, _ := os.ReadFile("./views/index.html")
+func numero1(w http.ResponseWriter, r *http.Request) {
+	vueRaw, _ := os.ReadFile("./views/numero1.html")
 	vue := string(vueRaw)
-	vue = strings.Replace(vue, "###TITRE###", "Blearg", 1)
+
+	w.Header().Set("Content-Type", "text/html")
+	io.WriteString(w, vue)
+}
+
+func numero2(w http.ResponseWriter, r *http.Request) {
+	vueRaw, _ := os.ReadFile("./views/numero2.html")
+	vue := string(vueRaw)
 
 	w.Header().Set("Content-Type", "text/html")
 	io.WriteString(w, vue)

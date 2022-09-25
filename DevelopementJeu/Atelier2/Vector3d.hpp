@@ -21,7 +21,7 @@ struct Vector3d{
     }
 
     /// @brief Obtention de la norme d'un vecteur
-    /// @return Norme
+    /// @return Norme du vecteur
     double norme(){
         return sqrt(x * x + y * y + z * z);
     }
@@ -54,7 +54,7 @@ struct Vector3d{
         return Vector3d(x, y, z);
     }   
 
-    /// @brief Calculer la produit vectoriel de 2 vecteurs
+    /// @brief Calculer la produit vectoriel de 2 vecteurs (Produit vectoriel)
     /// @param vector Vecteur recu en paramètre
     /// @return Vecteur du resultat
     Vector3d operator *(Vector3d vector){
@@ -65,19 +65,22 @@ struct Vector3d{
         return Vector3d(x, y, z);
     }    
 
-    /// @brief Calculer la somme de 2 vecteurs
+    /// @brief Calculer la somme de 2 vecteurs (Scalaire)
     /// @param vector Vecteur recu en paramètre
     /// @return Vecteur du resultat
     double operator %(Vector3d vector){
         return this->x * vector.x + this->y * vector.y + this->z * vector.z;
     }  
 
-
+    /// @brief AUgmenter la longueur d'un vecteur (Par un scalaire)
     Vector3d operator *(int number){
         return Vector3d(this->x * number, this->y * number, this->z * number);
     }
 
+    /// @brief Calculer l'anlge entre 2 vecteurs
+    /// @param vector Vecteur recu en paramètre
+    /// @return Angle
     double angleBetween2Vector3d(Vector3d vector){
-        return (*this % vector) / (norme()) * (vector.norme());
+        return acos((*this % vector) / (this->norme() * vector.norme()));
     }  
 };

@@ -1,7 +1,7 @@
 package main
 
 //Go routine
-/*
+
 import (
 	"fmt"
 	"math/rand"
@@ -22,7 +22,7 @@ func compteur(n int) {
 		amt := time.Duration(rand.Intn(250))
 		time.Sleep(time.Millisecond * amt)
 	}
-}*/
+}
 
 /*
 import (
@@ -119,7 +119,7 @@ func worker(i int) {
 	fmt.Println("travaille sur la tâche ", i)
 	time.Sleep(5 * time.Second)
 }*/
-
+/*
 import (
 	"fmt"
 	"os"
@@ -152,3 +152,4 @@ func main() {
 func launch() {
 	fmt.Println("Décollage")
 }
+*/

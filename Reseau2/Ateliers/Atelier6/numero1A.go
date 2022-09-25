@@ -7,11 +7,8 @@ import (
 )
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 10; i++ {
-		go func() {
-			estPremier()
-		}()
+		go estPremier()
 	}
 	var input string
 	fmt.Scanln(&input)
@@ -33,7 +30,7 @@ func estPremier() {
 		}
 		if i == 1 {
 			isPrime = true
-			fmt.Printf(string(rune(nb)))
+			fmt.Printf("Est premier: %d\n", nb)
 		}
 	}
 }
