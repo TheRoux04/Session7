@@ -7,18 +7,24 @@ import (
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	var c chan int = make(chan int)
-	go printer(c)
 	for i := 0; i < 10; i++ {
 		go estPremierB(c)
 
+	}
+
+	var countDone = 0
+	for countDone < 10 {
+		nb := <-c
+		fmt.Printf("Est premier: %d\n", nb)
+		countDone++
 	}
 	var input string
 	fmt.Scanln(&input)
 }
 
 func estPremierB(c chan int) {
-	rand.Seed(time.Now().UnixNano())
 	var isPrime bool = false
 	var nb int
 
@@ -35,13 +41,5 @@ func estPremierB(c chan int) {
 			isPrime = true
 			c <- nb
 		}
-	}
-}
-
-func printer(c chan int) {
-	for {
-		msg := <-c
-		fmt.Println(msg)
-		time.Sleep(time.Second * 1)
 	}
 }
