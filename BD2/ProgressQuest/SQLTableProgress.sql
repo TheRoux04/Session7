@@ -161,7 +161,7 @@ CREATE TABLE Donjon(
     DonjNbEnnemi int DEFAULT(1),
     DonjEnnemiCode int NOT NULL,
     
-    CONSTRAINT PK_butinDonjon_id PRIMARY KEY (DonjCode)
+    CONSTRAINT PK_Donjon_id PRIMARY KEY (DonjCode)
 )
 GO
 
@@ -170,7 +170,7 @@ CREATE TABLE ButinQuete(
     ButinQueQueteCode int NOT NULL,
     ButinQueItemCode int NOT NULL,
     
-    CONSTRAINT PK_butinDonjon_id PRIMARY KEY (ButinQueCode)
+    CONSTRAINT PK_butinQuete_id PRIMARY KEY (ButinQueCode)
 )
 GO
 
