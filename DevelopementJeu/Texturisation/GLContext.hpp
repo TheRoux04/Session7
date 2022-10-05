@@ -23,6 +23,8 @@ public:
     /// @param windowFlags Indicateurs de la fenêtre
     GLContext(const char* title = "", int x = SDL_WINDOWPOS_CENTERED, int y = SDL_WINDOWPOS_CENTERED, int width = 640, int height = 480, unsigned int windowFlags = 0) 
     : Window(title, x, y, width, height, windowFlags | SDL_WINDOW_OPENGL){
+        SDL_Init(SDL_INIT_EVERYTHING);
+        IMG_Init(IMG_INIT_PNG);
         TTF_Init();
         glContext = SDL_GL_CreateContext(sdlWindow);
         SDL_GL_SetSwapInterval(0);
@@ -41,13 +43,12 @@ public:
       
 
 
-        //SDL_Surface* sdlSurface = IMG_Load("pingouin.png");
-        SDL_Surface* sdlSurface = TTF_RenderText_Blended(ttfFont, "HELLO WORLD!", {255, 0, 0, 255});
-    
+        SDL_Surface* sdlSurface = IMG_Load("pingouin.png");
+        //SDL_Surface* sdlSurface = TTF_RenderText_Blended(ttfFont, "HELLO WORLD!", {255, 0, 0, 255});
         w = sdlSurface->w;
         h = sdlSurface->h;
 
-        unsigned int realPitch = sdlSurface->w * sdlSurface->format->BytesPerPixel;
+        /*unsigned int realPitch = sdlSurface->w * sdlSurface->format->BytesPerPixel;
         unsigned char* srcPointer = (unsigned char*)sdlSurface->pixels;
         unsigned char* dstPointer = srcPointer;
         for (size_t i = 0; i < sdlSurface->h; i++)
@@ -56,14 +57,14 @@ public:
             dstPointer += realPitch;
             srcPointer += sdlSurface->pitch;
         }
-        sdlSurface->pitch = realPitch;
+        sdlSurface->pitch = realPitch;*/
 
         #ifdef __APPLE__
             glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, sdlSurface->w, sdlSurface->h,
                                     0, GL_BGRA, GL_UNSIGNED_BYTE, sdlSurface->pixels);
         #else
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, sdlSurface->w, sdlSurface->h,
-                                    0, GL_BGRA, GL_UNSIGNED_BYTE, sdlSurface->pixels);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sdlSurface->w, sdlSurface->h,
+                                    0, GL_RGBA, GL_UNSIGNED_BYTE, sdlSurface->pixels);
         #endif
 
         SDL_FreeSurface(sdlSurface);
@@ -74,7 +75,7 @@ public:
 
     ~GLContext() {
         TTF_CloseFont(ttfFont);
-        glDeleteTextures(1, &textureId);
+        //glDeleteTextures(1, &textureId);
         SDL_GL_DeleteContext(glContext);
     }
 
@@ -90,7 +91,7 @@ public:
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        
+        glBindTexture(GL_TEXTURE_2D, textureId);
         glBegin(GL_QUADS);
             glTexCoord2d(0.0, 0.0); glVertex3d(0.0, 0.0, 0.0);
             glTexCoord2d(1.0, 0.0); glVertex3d(w, 0.0, 0.0);
