@@ -1,22 +1,27 @@
 package main
 
 import (
+	"encoding/base64"
 	"github.com/gorilla/websocket"
+	"golang.org/x/crypto/bcrypt"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
-	"userRepository"
+	"strings"
+	"time"
 )
 
 var upgrader = websocket.Upgrader{}
 
 func main() {
-
-	http.HandleFunc("/home", home)
+	openConnection()
+	http.HandleFunc("/", home)
 	http.HandleFunc("/client", client)
 	http.HandleFunc("/tech", tech)
 	http.HandleFunc("/error404", error404)
+	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/ws", ws)
 
 	fileServer := http.FileServer(http.Dir("./assets"))
@@ -48,52 +53,101 @@ func ws(w http.ResponseWriter, r *http.Request) {
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
-
+	vueRaw, _ := os.ReadFile("./views/home.html")
+	vue := string(vueRaw)
+	w.Header().Set("Content-Type", "text/html")
 	switch r.Method {
 	case "GET":
-		vueRaw, _ := os.ReadFile("./views/home.html")
-		vue := string(vueRaw)
-		w.Header().Set("Content-Type", "text/html")
-		io.WriteString(w, vue)
+		vue = strings.Replace(vue, "###ALERTHOME###", "", 1)
 	case "POST":
 		r.ParseForm()
 		username := r.FormValue("username")
 		password := r.FormValue("password")
+		if checkNoToken() == true {
+			if username != "" || password != "" {
+				id, pass := getUser(username)
+				if pass == password {
+					log.Println("Connexion réussie")
+					token := generateToken(username)
+					cookie := http.Cookie{
+						Name:  "tokenSession",
+						Value: token,
+					}
+					http.SetCookie(w, &cookie)
+					setToken(id, token)
 
-		if username != "" || password != "" {
-			userRepository.getUser(username, password)
-
+					http.Redirect(w, r, "/tech", http.StatusTemporaryRedirect)
+				} else {
+					vue = strings.Replace(vue, "###ALERTHOME###", "<div class='alert alert-danger'>Erreur de connection</div>", 1)
+				}
+			} else {
+				vue = strings.Replace(vue, "###ALERTHOME###", "<div class='alert alert-danger'>Erreur de connection</div>", 1)
+			}
+		} else {
+			vue = strings.Replace(vue, "###ALERTHOME###", "<div class='alert alert-danger'>Un technicien est déja connecté! Reessayer plus tard</div>", 1)
 		}
 
-		http.Redirect(w, r, "/tech", http.StatusTemporaryRedirect)
 	}
+
+	io.WriteString(w, vue)
 }
 
 func client(w http.ResponseWriter, r *http.Request) {
 	vueRaw, _ := os.ReadFile("./views/client.html")
 	vue := string(vueRaw)
-
 	w.Header().Set("Content-Type", "text/html")
+
 	io.WriteString(w, vue)
 }
 
 func tech(w http.ResponseWriter, r *http.Request) {
 	vueRaw, _ := os.ReadFile("./views/tech.html")
 	vue := string(vueRaw)
-
 	w.Header().Set("Content-Type", "text/html")
+
 	io.WriteString(w, vue)
 }
 
 func error404(w http.ResponseWriter, r *http.Request) {
 	vueRaw, _ := os.ReadFile("./views/404.html")
 	vue := string(vueRaw)
-
 	w.Header().Set("Content-Type", "text/html")
-	io.WriteString(w, vue)
 
+	io.WriteString(w, vue)
 }
 
-func login(username string, password string) {
+func logout(w http.ResponseWriter, r *http.Request) {
+	c := &http.Cookie{
+		Name:     "tokenSession",
+		Value:    "",
+		Path:     "/",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+	}
 
+	http.SetCookie(w, c)
+
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+}
+
+// GenerateToken returns a unique token based on the provided email string
+func generateToken(username string) string {
+	rand.Seed(time.Now().UnixNano())
+	username = username + string(rand.Intn(1000))
+	hash, err := bcrypt.GenerateFromPassword([]byte(username), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return base64.StdEncoding.EncodeToString(hash)
+}
+
+func deleteCookieHandler(rw http.ResponseWriter, r *http.Request) {
+
+	c, err := r.Cookie("storage")
+	if err != nil {
+		panic(err.Error())
+	}
+	c.Name = "Deleted"
+	c.Value = "Unuse"
+	c.Expires = time.Unix(1414414788, 1414414788000)
 }
