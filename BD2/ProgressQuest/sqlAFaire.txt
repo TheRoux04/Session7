@@ -1,11 +1,14 @@
-sp_ajouterDonjon
-sp_supprimerDonjon
-sp_modifierDonjon
+sp_ajouterDonjon /
+sp_supprimerDonjon /
+sp_modifierDonjon /
 
-sp_ajouterEquipement
-sp_supprimerEquipement
-sp_modifierEquipement
+sp_ajouterEquipement /
+sp_supprimerEquipement /
+sp_modifierEquipement /
 
-sp_ajouterQuete
-sp_supprimerQuete
-sp_modifierQuete
+sp_ajouterQuete /
+sp_supprimerQuete /
+sp_modifierQuete /
+
+sp_ajouterEnnemiDonjon
+sp_supprimerEnnemiDonjon
