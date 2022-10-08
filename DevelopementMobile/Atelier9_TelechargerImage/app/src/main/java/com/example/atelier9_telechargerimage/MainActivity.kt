@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.StringRequest
@@ -18,19 +19,18 @@ import java.util.regex.Pattern
 
 
 class MainActivity : AppCompatActivity() {
+    lateinit var queue : RequestQueue
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        queue = Volley.newRequestQueue(this)
     }
 
     fun download(v : View) {
-
-        val queue = Volley.newRequestQueue(this)
         val urlEdit : EditText = findViewById(R.id.tvURL)
         val url = urlEdit.text.toString()
         var responseText: String = ""
         val allUrl: MutableList<String> = ArrayList()
-
         val stringRequest = StringRequest(
             // Requête get
             Request.Method.GET,
@@ -44,11 +44,12 @@ class MainActivity : AppCompatActivity() {
 
                 while (m.find()) {
                     var imgSrc = m.group(1)
-                    val base = Environment.getExternalStorageDirectory().absolutePath.toString() + "/tanadgomaaa"
-                    val imagePath = "file://$base/test.jpg"
-                    imgSrc = imgSrc.replace(imgSrc, imagePath)
+                    //val base = Environment.getExternalStorageDirectory().absolutePath.toString() + "/tanadgomaaa"
+                    //val imagePath = "file://$base/test.jpg"
+                    //imgSrc = imgSrc.replace(imgSrc, imagePath)
                     allUrl.add(imgSrc)
                 }
+                downloadImage(url, allUrl)
             },
             Response.ErrorListener { erreur ->
                 responseText =  "Erreur de téléchargement " + erreur.toString()
@@ -59,28 +60,27 @@ class MainActivity : AppCompatActivity() {
         queue.add(stringRequest)
 
 
+
+
+    }
+
+    fun downloadImage(urlPage : String, allUrl : MutableList<String> = ArrayList()) {
         var imgUrl: String
         var mCLayout : LinearLayout = findViewById (R.id.viewLayout);
+        mCLayout.removeAllViews()
 
-        for (urlImage in allUrl.indices) {
-            imgUrl = urlImage.toString()
+        for (urlImage in allUrl) {
+            imgUrl = urlPage + urlImage
 
             var imageRequest = ImageRequest(
                 imgUrl,  // Image URL
                 { response ->
-                    // Bitmap listener
-                    // Do something with response
-                    val view: ImageView = ImageView(this);
+                    val view = ImageView(this);
                     view.setImageBitmap(response)
-
-                    // Save this downloaded bitmap to internal storage
-                    //val uri: Uri = saveImageToInternalStorage(response)
-
-                    // Display the internal storage saved image to image view
-                    //mImageViewInternal.setImageURI(uri)
+                    mCLayout.addView(view)
                 },
-                0,  // Image width
-                0,  // Image height
+                500,  // Image width
+                500,  // Image height
                 ImageView.ScaleType.CENTER_CROP,  // Image scale type
                 Bitmap.Config.RGB_565
             )  //Image decode configuration
@@ -93,6 +93,11 @@ class MainActivity : AppCompatActivity() {
 
             queue.add(imageRequest)
         }
-
     }
+
+    fun clearDownload(v : View) {
+        var mCLayout : LinearLayout = findViewById (R.id.viewLayout);
+        mCLayout.removeAllViews()
+    }
+
 }

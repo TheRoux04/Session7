@@ -8,20 +8,20 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <EditText
+        android:id="@+id/tvURL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:hint="Type URL"
+        android:minHeight="48dp"
+        android:text="https://fr.akinator.com" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/tvURL"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="32dp"
-            android:hint="Type URL"
-            android:minHeight="48dp"
-            android:text="http://www.patate.com" />
 
         <Button
             android:id="@+id/button"
@@ -32,14 +32,31 @@
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
             android:onClick="download"
-            android:text="Button" />
+            android:text="Get Images" />
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:onClick="clearDownload"
+            android:text="Clear Search" />
+
     </LinearLayout>
 
 
-    <LinearLayout
-        android:id="@+id/viewLayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"/>
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/viewLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+    </ScrollView>
 
 </LinearLayout>
