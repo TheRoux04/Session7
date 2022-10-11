@@ -17,20 +17,19 @@
             <div class="flex-grow-0" id="message-form">
                 <form class="d-flex">
                     <div class="flex-grow-1 me-2">
-                        <input placeholder="Message" class="form-control">
+                        <input id="message" placeholder="Message" class="form-control">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-sm rounded-circle">
+                    <button type="submit" id="sendC" class="btn btn-primary btn-sm rounded-circle">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cursor-fill" viewBox="0 0 16 16" style="position:relative;bottom:2px;"><path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z"/></svg>
                     </button>
                 </form>
             </div>
             <div class="flex-grow-1" id="message-container">
-                <p><b>Client</b>: Coucou</p>
-                <p><b>Vous</b>: Coucou</p>
                 <p class="text-muted"><b>Système</b>: Bienvenue au service d'aide en ligne du CAI! Comment pouvons-nous vous aider?</p>
             </div>
         </div>
     </div>
 </div>
+<script src="./assets/js/clientWebSocket.js"></script>
 </body>
 </html>

@@ -5,18 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3392dae3-385c-4c7f-bda9-96e825e00170" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../DevelopementJeu/Atelier2/Matrix44d.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../DevelopementJeu/Atelier2/Matrix44d.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../DevelopementJeu/Atelier2/Vector3d.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../DevelopementJeu/Atelier2/Vector3d.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Ateliers/Atelier6/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../Ateliers/Atelier6/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Ateliers/Atelier7/assets/js/somme.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Ateliers/Atelier7/assets/js/somme.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Ateliers/Atelier7/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/../Ateliers/Atelier7/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Ateliers/Atelier7/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../Ateliers/Atelier7/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Ateliers/Atelier7/views/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Ateliers/Atelier7/views/numero1.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/http/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http/views/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/http/views/index2.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Notes_de_cours/Thread/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../Notes_de_cours/Thread/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../BD2/ProgressQuest/progressQuest_1.accdb" beforeDir="false" afterPath="$PROJECT_DIR$/../../BD2/ProgressQuest/progressQuest_1.accdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../DevelopementMobile/c56-mobile" beforeDir="false" afterPath="$PROJECT_DIR$/../../DevelopementMobile/c56-mobile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TP1CAI/BDCAI.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TP1CAI/Database/BDCAI.db" beforeDir="false" afterPath="$PROJECT_DIR$/../TP1CAI/Database/BDCAI.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TP1CAI/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../TP1CAI/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TP1CAI/userRepository.go" beforeDir="false" afterPath="$PROJECT_DIR$/../TP1CAI/userRepository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TP1CAI/views/modif.html" beforeDir="false" afterPath="$PROJECT_DIR$/../TP1CAI/views/adminMenu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../TP1CAI/views/tech.html" beforeDir="false" afterPath="$PROJECT_DIR$/../TP1CAI/views/tech.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +44,7 @@
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "C:/Users/Olivier Savoie",
+    "last_opened_file_path": "C:/Users/1908527",
     "nodejs_package_manager_path": "npm"
   }
 }]]></component>

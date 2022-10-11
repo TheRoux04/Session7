@@ -12,7 +12,7 @@
         <h1>Clavardage du CAI</h1>
     </div>
     <div class="text-end mb-2">
-        <a href="/logout" class="btn btn-secondary" id="deconnexion" >Déconnexion</a>
+        <a href="/logout" class="btn btn-secondary">Déconnexion</a>
     </div>
     <div class="text-center flex-grow-0 row">
         <p class="alert alert-info" id="loadingmsg">Chargement de la connexion</p>
@@ -26,20 +26,20 @@
                 <div class="flex-grow-0" id="message-form">
                     <form class="d-flex">
                         <div class="flex-grow-1 me-2">
-                            <input placeholder="Message" class="form-control">
+                            <input id="message" placeholder="Message" class="form-control">
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm rounded-circle">
+                        <button type="submit" id="sendT" class="btn btn-primary btn-sm rounded-circle" onclick="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cursor-fill" viewBox="0 0 16 16" style="position:relative;bottom:2px;"><path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z"/></svg>
                         </button>
                     </form>
                 </div>
                 <div class="flex-grow-1" id="message-container">
-                    <p><b>Vous</b>: Coucou</p>
-                    <p><b>Client</b>: Coucou</p>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script src="./assets/js/techWebSocket.js"></script>
 </body>
 </html>
