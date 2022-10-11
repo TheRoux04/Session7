@@ -1,0 +1,4 @@
+12
+
+
+On Windows install http://tdm-gcc.tdragon.net/download, that is all.

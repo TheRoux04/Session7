@@ -9,18 +9,17 @@
 <body>
 <div class="container text-center">
     <h1>Clavardage du CAI</h1>
-    ###ALERTHOME###
     <div class="row">
         <div class="col">
             <h2>Client</h2>
             <p>Vous avez besoin d'aide en informatique? Que ce soit pour un système du cégep ou votre ordinateur personnel, nous pouvons vous aider.</p>
             <a class="btn btn-primary d-none" id="button_online" href="/client">Service en ligne</a>
-            ###SERVICESAVAILABLE###
+            <button class="btn btn-danger" id="button_offline" disabled>Service hors ligne</button>
         </div>
         <div class="col text-center">
             <h2>Technicien</h2>
             <p>Connectez-vous chers étudiants.</p>
-            <form method="post">
+            <form method="post" action="/login">
                 <div class="row mb-3">
                     <label for="username" class="form-label col-3">Nom d'utilisateur</label>
                     <div class="col-9">

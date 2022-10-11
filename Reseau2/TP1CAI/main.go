@@ -59,6 +59,12 @@ func home(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		vue = strings.Replace(vue, "###ALERTHOME###", "", 1)
+		if checkNoToken() == false {
+			vue = strings.Replace(vue, "###SERVICESAVAILABLE###", "<button class='btn btn-danger' id='button_offline' disabled>Service hors ligne</button>", 1)
+		} else {
+			vue = strings.Replace(vue, "###SERVICESAVAILABLE###", "<button class='btn btn-success' id='button_online' >Service en ligne</button>", 1)
+			log.Println("Tech cennecter")
+		}
 	case "POST":
 		r.ParseForm()
 		username := r.FormValue("username")
@@ -75,6 +81,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 					}
 					http.SetCookie(w, &cookie)
 					setToken(id, token)
+					vue = strings.Replace(vue, "###SERVICESAVAILABLE###", "<button class='btn btn-success' id='button_online' >Service en ligne</button>", 1)
 
 					http.Redirect(w, r, "/tech", http.StatusTemporaryRedirect)
 				} else {
@@ -86,7 +93,6 @@ func home(w http.ResponseWriter, r *http.Request) {
 		} else {
 			vue = strings.Replace(vue, "###ALERTHOME###", "<div class='alert alert-danger'>Un technicien est déja connecté! Reessayer plus tard</div>", 1)
 		}
-
 	}
 
 	io.WriteString(w, vue)
@@ -151,3 +157,5 @@ func deleteCookieHandler(rw http.ResponseWriter, r *http.Request) {
 	c.Value = "Unuse"
 	c.Expires = time.Unix(1414414788, 1414414788000)
 }
+
+//func modifyTech
