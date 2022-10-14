@@ -1,5 +1,11 @@
 package main
 
+/*
+import (
+	"fmt"
+	"time"
+)
+
 //Go routine
 
 import (
@@ -22,7 +28,7 @@ func compteur(n int) {
 		amt := time.Duration(rand.Intn(250))
 		time.Sleep(time.Millisecond * amt)
 	}
-}
+}*/
 
 /*
 import (
@@ -96,7 +102,6 @@ func Carre(out chan<- int, in <-chan int) {
 }
 */
 
-/*
 import (
 	"fmt"
 	"time"
@@ -117,8 +122,9 @@ func main() {
 
 func worker(i int) {
 	fmt.Println("travaille sur la tâche ", i)
-	time.Sleep(5 * time.Second)
-}*/
+	time.Sleep(100 * time.Second)
+}
+
 /*
 import (
 	"fmt"

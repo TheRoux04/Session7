@@ -17,11 +17,14 @@ import (
 var upgrader = websocket.Upgrader{}
 
 func main() {
-	clientsChan := map[string]chan []byte{}
+	clientsChan := map[int]chan []byte{}
 	techChan := make(chan []byte)
+	nbConnections := 1
 	openConnection()
 	http.HandleFunc("/", home)
-	http.HandleFunc("/client", client)
+	http.HandleFunc("/client", func(w http.ResponseWriter, r *http.Request) {
+		client(clientsChan, w, r, nbConnections)
+	})
 	http.HandleFunc("/tech", tech)
 	http.HandleFunc("/admin", adminMenu)
 	http.HandleFunc("/allTech", allTech)
@@ -31,7 +34,7 @@ func main() {
 	http.HandleFunc("/error404", error404)
 	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/wsClient", func(w http.ResponseWriter, r *http.Request) {
-		wsClient(clientsChan, techChan, w, r)
+		wsClient(clientsChan, techChan, w, r, nbConnections)
 	})
 	http.HandleFunc("/wsTech", func(w http.ResponseWriter, r *http.Request) {
 		wsTech(clientsChan, techChan, w, r)
@@ -43,39 +46,47 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 
-func wsClient(clientsChan map[string]chan []byte, techChan chan []byte, w http.ResponseWriter, r *http.Request) {
+func wsClient(clientsChan map[int]chan []byte, techChan chan []byte, w http.ResponseWriter, r *http.Request, clientId int) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Print("upgrade:", err)
+		log.Println("Error", err)
 		return
 	}
 	defer c.Close()
 	log.Println("wsClient")
-	go sendMessageClient(c, techChan)
-	client := clientsChan[strconv.Itoa(len(clientsChan))]
+	go sendMessageClient(c, techChan, clientId)
+
+	client := clientsChan[clientId]
+	log.Println("client", client)
+	log.Println("clientId", clientId)
 	for {
 		msg := <-client
-		log.Println(string(msg))
+		log.Println("yowassu", string(msg))
 		c.WriteMessage(websocket.TextMessage, msg)
+		log.Println("Le client a reçu le message")
 	}
 }
 
-func sendMessageClient(c *websocket.Conn, techChan chan []byte) {
+func sendMessageClient(c *websocket.Conn, techChan chan []byte, clientId int) {
 	for {
 		log.Println("msgClient")
 		_, message, err := c.ReadMessage()
 		if err != nil {
-			log.Println("read:", err)
+			log.Println("Client disconnected")
+			techChan <- []byte("Client disconnected:" + strconv.Itoa(clientId))
 			break
 		}
 		techChan <- message
 	}
 }
 
-func wsTech(clientsChan map[string]chan []byte, techChan chan []byte, w http.ResponseWriter, r *http.Request) {
+func wsTech(clientsChan map[int]chan []byte, techChan chan []byte, w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Print("upgrade:", err)
+		log.Println("Tech disconnected")
+		for _, client := range clientsChan {
+			client <- []byte("Tech disconnected")
+		}
 		return
 	}
 	defer c.Close()
@@ -85,10 +96,11 @@ func wsTech(clientsChan map[string]chan []byte, techChan chan []byte, w http.Res
 		msg := <-techChan
 		log.Println(string(msg))
 		c.WriteMessage(websocket.TextMessage, msg)
+		log.Println("Le tech a reçu le message")
 	}
 }
 
-func sendMessageTech(c *websocket.Conn, clientsChan chan []byte) {
+func sendMessageTech(c *websocket.Conn, clientsChan map[int]chan []byte) {
 	for {
 		log.Println("msgTech")
 		_, message, err := c.ReadMessage()
@@ -96,7 +108,14 @@ func sendMessageTech(c *websocket.Conn, clientsChan chan []byte) {
 			log.Println("read:", err)
 			break
 		}
-		clientsChan <- message
+		messageComponents := strings.Split(string(message), ":")
+		value, _ := strconv.Atoi(messageComponents[1])
+		if messageComponents[0] == "Client disconnected" {
+			close(clientsChan[value])
+		}
+		log.Println("yoyoyo", clientsChan[value])
+		log.Println("yoyoyo", value)
+		clientsChan[value] <- message
 	}
 }
 
@@ -174,10 +193,13 @@ func whoConnected(token string) int {
 	return whoConnected
 }
 
-func client(w http.ResponseWriter, r *http.Request) {
+func client(clientsChan map[int]chan []byte, w http.ResponseWriter, r *http.Request, clientId int) {
 	vueRaw, _ := os.ReadFile("./views/client.html")
 	vue := string(vueRaw)
 	w.Header().Set("Content-Type", "text/html")
+	clientChan := make(chan []byte)
+	clientsChan[clientId] = clientChan
+	clientId++
 
 	io.WriteString(w, vue)
 }
