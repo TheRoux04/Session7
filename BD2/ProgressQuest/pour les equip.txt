@@ -1,0 +1,65 @@
+
+CREATE FUNCTION fntEquiPersoCasque(@persoId int)
+RETURNS int
+AS
+    begin
+        DECLARE @exist bit
+        SET @exist = -1
+        IF NOT EXISTS (SELECT EquipInvEquipementCode FROM EquipementInventaire INNER JOIN Equipement on EquipInvEquipementCode = EquipCode INNER JOIN Emplacement on EmplacementCode = EquipEmplacementCode WHERE EquipInvPersoCode = @persoId AND EmplacementNom = 'Casque')
+            SET @exist = (SELECT EquipInvEquipementCode FROM EquipementInventaire INNER JOIN Equipement on EquipInvEquipementCode = EquipCode INNER JOIN Emplacement on EmplacementCode = EquipEmplacementCode WHERE EquipInvPersoCode = @persoId AND EmplacementNom = 'Casque')
+        RETURN @exist
+    end
+GO
+
+
+CREATE FUNCTION fntEquiPersoArme(@persoId int)
+RETURNS int
+AS
+    begin
+        DECLARE @exist bit
+        SET @exist = -1
+        IF NOT EXISTS (SELECT EquipInvEquipementCode FROM EquipementInventaire INNER JOIN Equipement on EquipInvEquipementCode = EquipCode INNER JOIN Emplacement on EmplacementCode = EquipEmplacementCode WHERE EquipInvPersoCode = @persoId AND EmplacementNom = 'Arme')
+            SET @exist = (SELECT EquipInvEquipementCode FROM EquipementInventaire INNER JOIN Equipement on EquipInvEquipementCode = EquipCode INNER JOIN Emplacement on EmplacementCode = EquipEmplacementCode WHERE EquipInvPersoCode = @persoId AND EmplacementNom = 'Arme'
+                                                                                                                                                                                                                 AND EquipInvEquipementCode = Equipement.EquipCode)
+        RETURN @exist
+    end
+GO
+
+CREATE FUNCTION fntEquiPersoArmure(@persoId int)
+RETURNS int
+AS
+    begin
+        DECLARE @exist bit
+        SET @exist = -1
+        IF NOT EXISTS (SELECT EquipInvEquipementCode FROM EquipementInventaire INNER JOIN Equipement on EquipInvEquipementCode = EquipCode INNER JOIN Emplacement on EmplacementCode = EquipEmplacementCode WHERE EquipInvPersoCode = @persoId AND EmplacementNom = 'Plastron')
+            SET @exist = (SELECT EquipInvEquipementCode FROM EquipementInventaire INNER JOIN Equipement on EquipInvEquipementCode = EquipCode INNER JOIN Emplacement on EmplacementCode = EquipEmplacementCode WHERE EquipInvPersoCode = @persoId AND EmplacementNom = 'Plastron')
+        RETURN @exist
+    end
+GO
+
+
+CREATE FUNCTION fntEquiPersoJambes(@persoId int)
+RETURNS int
+AS
+    begin
+        DECLARE @exist bit
+        SET @exist = -1
+        IF NOT EXISTS (SELECT EquipInvEquipementCode FROM EquipementInventaire INNER JOIN Equipement on EquipInvEquipementCode = EquipCode INNER JOIN Emplacement on EmplacementCode = EquipEmplacementCode WHERE EquipInvPersoCode = @persoId AND EmplacementNom = 'Jambes')
+            SET @exist = (SELECT EquipInvEquipementCode FROM EquipementInventaire INNER JOIN Equipement on EquipInvEquipementCode = EquipCode INNER JOIN Emplacement on EmplacementCode = EquipEmplacementCode WHERE EquipInvPersoCode = @persoId AND EmplacementNom = 'Jambes')
+        RETURN @exist
+    end
+GO
+
+
+
+CREATE FUNCTION fntEquiPersoBottes(@persoId int)
+RETURNS int
+AS
+    begin
+        DECLARE @exist bit
+        SET @exist = -1
+        IF NOT EXISTS (SELECT EquipInvEquipementCode FROM EquipementInventaire INNER JOIN Equipement on EquipInvEquipementCode = EquipCode INNER JOIN Emplacement on EmplacementCode = EquipEmplacementCode WHERE EquipInvPersoCode = @persoId AND EmplacementNom = 'Bottes')
+            SET @exist = (SELECT EquipInvEquipementCode FROM EquipementInventaire INNER JOIN Equipement on EquipInvEquipementCode = EquipCode INNER JOIN Emplacement on EmplacementCode = EquipEmplacementCode WHERE EquipInvPersoCode = @persoId AND EmplacementNom = 'Bottes')
+        RETURN @exist
+    end
+GO
