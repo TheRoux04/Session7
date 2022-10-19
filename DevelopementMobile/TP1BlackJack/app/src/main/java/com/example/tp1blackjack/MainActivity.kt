@@ -3,6 +3,7 @@ package com.example.tp1blackjack
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
+import com.example.tp1blackjack.Retrofit.Companion.initDeck
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -11,6 +12,11 @@ class MainActivity : AppCompatActivity() {
 
         val view = ImageView(this)
         //view.setImageResource(R.drawable.jeu_carte_1280x715) fond d ecran
+
+        val retrofit = initDeck()
+        var deckCall = retrofit.getDeck()
+
+
 
     }
 
@@ -81,7 +87,14 @@ class MainActivity : AppCompatActivity() {
             else -> {}
         }
 
+        view.layoutParams.height = 225
         return view
     }
+
+    fun getCard(){
+
+    }
 }
+
+
 

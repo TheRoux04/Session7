@@ -5,6 +5,6 @@ import retrofit2.http.GET
 
 interface DeckAPI {
     @GET("/getDeck")
-    fun getDeck(): Call<Deck>
+    fun getDeck(): Deck
 
 }

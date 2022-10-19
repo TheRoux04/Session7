@@ -2,8 +2,10 @@ package com.example.tp1blackjack
 
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface CardAPI {
-    @GET("/getCard")
-    fun getCard(): Call<Card>
+    @GET("/getCard/{deckId}")
+    fun getCard(@Path("deckId") deckId : Int): Card
+
 }

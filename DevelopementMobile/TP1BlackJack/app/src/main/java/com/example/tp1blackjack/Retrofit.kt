@@ -12,7 +12,7 @@ class Retrofit {
                 .build().create(DeckAPI::class.java)
         }
 
-        fun initCard(): CardAPI {
+        fun initCard(deck : Deck): CardAPI {
             return Retrofit.Builder()
                 .baseUrl("https://c56.drynish.synology.me/getCard")
                 .addConverterFactory(GsonConverterFactory.create())
