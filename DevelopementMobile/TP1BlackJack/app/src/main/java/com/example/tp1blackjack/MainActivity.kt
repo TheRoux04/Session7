@@ -5,13 +5,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import java.sql.Time
+import com.google.android.material.navigation.NavigationView
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: GameViewModel
@@ -20,14 +23,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val stats = findViewById<NavigationView>(R.id.stats)
 
-
-
-
-
+        stats.visibility = View.GONE
         startNewHands()
-
-
 
     }
 
@@ -38,9 +37,9 @@ class MainActivity : AppCompatActivity() {
         val txtPlayerScore = findViewById<TextView>(R.id.playerScore)
         val playerCards = findViewById<ViewGroup>(R.id.playerLayout)
         val dealerCards = findViewById<ViewGroup>(R.id.dealerLayout)
+        val btnHit = findViewById<View>(R.id.btnHit)
+        val btnStand = findViewById<View>(R.id.btnStand)
         viewModel = ViewModelProvider(this)[GameViewModel::class.java]
-        viewModel.dealerCards.value = listOf()
-        viewModel.playerCards.value = listOf()
         dealerCards.removeAllViews()
         playerCards.removeAllViews()
         txtDealerScore.text = "0"
@@ -63,6 +62,8 @@ class MainActivity : AppCompatActivity() {
                                 Log.d("Player", "Blackjack")
                                 Log.d("Dealer", "Lose")
                                 Handler(Looper.getMainLooper()).postDelayed({
+                                    btnHit.isEnabled = false
+                                    btnStand.isEnabled = false
                                     startNewHands()
                                 }, 2000)
                             }
@@ -73,6 +74,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.dealerCards.observe(this) {
+            btnHit.isEnabled = false
+            btnStand.isEnabled = false
             dealerCards.removeAllViews()
             if (it.size <= 2 && viewModel.getPlayerScore() != 21){
                 firstHand = true
@@ -83,26 +86,86 @@ class MainActivity : AppCompatActivity() {
                 Log.d("Dealer", viewModel.getDealerScore().toString())
                 firstHand = false
             }
+            btnHit.isEnabled = true
+            btnStand.isEnabled = true
         }
 
         viewModel.playerCards.observe(this) {
+            btnHit.isEnabled = false
+            btnStand.isEnabled = false
             playerCards.removeAllViews()
             for (card in it) {
                 playerCards.addView(getImageCard(card, false))
                 txtPlayerScore.text = viewModel.getPlayerScore().toString()
                 //Log.d("Player", card.rank + " " + card.suit)
             }
+            btnHit.isEnabled = true
+            btnStand.isEnabled = true
         }
+
+        /*viewModel.displayStats().observe(this) {
+            val cardLeftLay = findViewById<LinearLayout>(R.id.cardLeftLayout)
+            val chancesLay = findViewById<LinearLayout>(R.id.chancesLayout)
+            val totalCard = findViewById<TextView>(R.id.txtCardsLeft)
+            cardLeftLay.removeAllViews()
+            chancesLay.removeAllViews()
+            for (stat in it) {
+                val txtCardLeft = TextView(this)
+                cardLeftLay.addView(txtCardLeft.apply {
+                    text = stat.leftCard.toString()
+                    textSize = 24f
+                    setTextColor(Color.BLACK)
+                    setBackgroundColor(Color.parseColor("#4CAF50"))
+                    gravity = Gravity.CENTER
+                })
+
+            }
+            /*
+            viewModel.getPourcentage().observe(this) {
+                for (pourcentage in it) {
+                    val txtChances = TextView(this)
+                    chancesLay.addView(txtChances.apply {
+                        text = pourcentage
+                        textSize = 24f
+                        setTextColor(Color.BLACK)
+                        setBackgroundColor(Color.parseColor("#4CAF50"))
+                        gravity = Gravity.CENTER
+                    })
+                }
+            }*/
+
+            totalCard.text = viewModel.totalCardsDeck.toString()
+        }*/
+
+    }
+
+    fun OpenStats(view: View){
+        val stats = findViewById<NavigationView>(R.id.stats)
+
+        if (stats.visibility == View.VISIBLE){
+            stats.visibility = View.GONE
+        }else{
+            stats.visibility = View.VISIBLE
+        }
+
+
     }
 
     fun Hit(v : View){
         val dealerCards = findViewById<ViewGroup>(R.id.dealerLayout)
         val txtDealerScore = findViewById<TextView>(R.id.dealerScore)
+        val btnHit = findViewById<View>(R.id.btnHit)
+        val btnStand = findViewById<View>(R.id.btnStand)
         val dealCards = viewModel.dealerCards.value!!
+
+        btnHit.isEnabled = false
+        btnStand.isEnabled = false
 
         viewModel.getCard().observe(this) {
             viewModel.addPlayerCard(it)
             if (viewModel.getPlayerScore() > 21){
+                btnHit.isEnabled = false
+                btnStand.isEnabled = false
                 Log.d("Player", "Bust")
                 Log.d("Dealer", "Win")
                 for (card in dealCards) {
@@ -119,7 +182,6 @@ class MainActivity : AppCompatActivity() {
                 }, 2000)
             }
         }
-
     }
 
     fun Stand(v : View){
@@ -137,7 +199,9 @@ class MainActivity : AppCompatActivity() {
                         startNewHands()
                     }, 2000)
                 }else if (viewModel.getDealerScore() < 17 && viewModel.getDealerScore() < viewModel.getPlayerScore()){
-                    Handler(Looper.getMainLooper()).postDelayed({Stand(v)}, 1000)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        Stand(v)
+                    }, 1000)
 
                 } else if (viewModel.getDealerScore() > 16 && viewModel.getDealerScore() > viewModel.getPlayerScore()){
                     Log.d("Dealer", "Win")
@@ -296,11 +360,6 @@ class MainActivity : AppCompatActivity() {
         view.adjustViewBounds = true
         return view
     }
-
-    fun getCard(){
-
-    }
-
 
 }
 
