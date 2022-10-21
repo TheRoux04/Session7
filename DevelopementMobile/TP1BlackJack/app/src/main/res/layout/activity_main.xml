@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:id="@+id/croupierLayout"
+        android:id="@+id/dealerLayout"
         android:layout_width="896dp"
         android:layout_height="243dp"
         android:gravity="center"
@@ -25,7 +25,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/joueurLayout"
+        android:id="@+id/playerLayout"
         android:layout_width="896dp"
         android:layout_height="243dp"
         android:gravity="center"
@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/croupierLayout"
+        app:layout_constraintTop_toBottomOf="@+id/dealerLayout"
         app:layout_constraintVertical_bias="0.298">
 
     </LinearLayout>
@@ -68,6 +68,7 @@
             android:id="@+id/btnStand"
             android:layout_width="217dp"
             android:layout_height="81dp"
+            android:onClick="Stand"
             android:text="Stand"
             android:textSize="34sp"
             app:layout_constraintBottom_toBottomOf="@+id/btnHit"
@@ -107,27 +108,27 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="24"
-        android:textColor="#000000"
-        android:textSize="48sp"
-        app:layout_constraintBottom_toBottomOf="@+id/joueurLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/joueurLayout"
-        app:layout_constraintTop_toTopOf="@+id/joueurLayout" />
-
-    <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/playerScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
         android:textColor="#000000"
         android:textSize="48sp"
-        app:layout_constraintBottom_toBottomOf="@+id/croupierLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/playerLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/croupierLayout"
-        app:layout_constraintTop_toTopOf="@+id/croupierLayout" />
+        app:layout_constraintStart_toEndOf="@+id/playerLayout"
+        app:layout_constraintTop_toTopOf="@+id/playerLayout" />
+
+    <TextView
+        android:id="@+id/dealerScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textColor="#000000"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dealerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dealerLayout"
+        app:layout_constraintTop_toTopOf="@+id/dealerLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

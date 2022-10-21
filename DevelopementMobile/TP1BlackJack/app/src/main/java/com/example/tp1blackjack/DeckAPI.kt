@@ -4,7 +4,7 @@ import retrofit2.Call
 import retrofit2.http.GET
 
 interface DeckAPI {
-    @GET("/getDeck")
+    @GET("/getDeck/7")
     suspend fun getDeck(): Deck
 
 }
