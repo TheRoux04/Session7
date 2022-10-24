@@ -15,7 +15,7 @@ func main() {
 		wg.Add(1)
 		go func(nb *int, m *sync.RWMutex, w int, wg *sync.WaitGroup) {
 			defer wg.Done()
-			time.Sleep(time.Duration(rand.Intn(10)) * time.Millisecond)
+			//time.Sleep(time.Duration(rand.Intn(10)) * time.Millisecond)
 			fmt.Printf("Lecteur %d se réveille\n", w)
 			m.RLock()
 			fmt.Printf("Lecture %d regarde\n", w)
@@ -28,8 +28,11 @@ func main() {
 	for i := 0; i < 2; i++ {
 		wg.Add(1)
 		go func(nb *int, m *sync.RWMutex, i int, wg *sync.WaitGroup) {
+			//time.Sleep()
 			defer wg.Done()
+			fmt.Printf("Lecteur %d se réveille\n", i)
 			m.Lock()
+			*nb++
 			fmt.Printf("Ecrivain %d à modifier\n", i)
 			m.Unlock()
 		}(&n, &m, i, &wg)

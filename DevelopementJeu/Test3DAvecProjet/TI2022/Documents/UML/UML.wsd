@@ -1,0 +1,85 @@
+@@startuml "Bruh"
+hide circle
+
+' classes
+class Application{}
+Application *-- "*" Scene
+Application "1" *-- "1" Window
+
+class GLContext{}
+
+' WACK
+class Matrix44d{}
+
+class Vector3d{}
+
+
+abstract class Window <<abstract>>{}
+Window <|-- GLContext
+
+abstract class Scene <<abstract>>{}
+Scene *-- "*" Observable
+Scene *--"2" Matrix44d
+Scene *--"*" Drawable2d
+Scene <|-- Menu
+Scene <|-- SaveMenu
+Scene <|-- PaperBall
+Scene <|-- Options
+Scene <|-- ChairRace
+Scene <|-- SkillTree
+Scene <|-- EscapePhil
+Scene <|-- NetworkArch
+Scene <|-- Terminal
+Scene <|-- SimpleReparation
+class Menu{}
+class PaperBall{}
+class SaveMenu{}
+class Options{}
+class SkillTree{}
+class NetworkArch{}
+class Terminal{}
+class EscapePhil{}
+class ChairRace{}
+class SimpleFixes{}
+
+abstract class Drawable2d <<abstract>>{}
+Drawable2d <|-- TxtBox
+Drawable2d <|-- Label
+Drawable2d <|-- ProgressBar
+Drawable2d <|-- Button
+Drawable2d <|-- HintBox
+Drawable2d <|-- CheckBox
+Drawable2d <|-- Image
+Drawable2d .. Vector3d
+
+class TxtBox{}
+class Label{}
+class ProgressBar{}
+class Button{}
+class HintBox{}
+class CheckBox{}
+class Image{}
+
+class Observable{}
+Observable o-- "*" Observer
+
+abstract class Observer<<abstract>>{}
+Observer <|-- Drawable2d
+
+package {
+    class Event <<static>>{}
+
+    class ResourcesManager <<static>>{}
+    ResourcesManager *-- "*" Resource
+
+    abstract class Resource <<abstract>>{}
+    Resource <|-- TTFont
+    Resource <|-- Texture
+
+    class Texture{}
+    class TTFont{}
+}
+
+class Timer{}
+
+@@enduml

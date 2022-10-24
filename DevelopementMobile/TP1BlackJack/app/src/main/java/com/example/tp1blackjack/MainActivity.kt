@@ -234,28 +234,28 @@ class MainActivity : AppCompatActivity() {
                 "Coeur" -> {
                     when (card.rank){
                         "As" -> {
-                            view.setImageResource(R.drawable.diamondsace)
+                            view.setImageResource(R.drawable.heartsace)
                             view.setBackgroundColor(Color.rgb(255, 255, 255));
                         }
-                        "2" -> view.setImageResource(R.drawable.diamonds2)
-                        "3" -> view.setImageResource(R.drawable.diamonds3)
-                        "4" -> view.setImageResource(R.drawable.diamonds4)
-                        "5" -> view.setImageResource(R.drawable.diamonds5)
-                        "6" -> view.setImageResource(R.drawable.diamonds6)
-                        "7" -> view.setImageResource(R.drawable.diamonds7)
-                        "8" -> view.setImageResource(R.drawable.diamonds8)
-                        "9" -> view.setImageResource(R.drawable.diamonds9)
-                        "10" -> view.setImageResource(R.drawable.diamonds10)
+                        "2" -> view.setImageResource(R.drawable.hearts2)
+                        "3" -> view.setImageResource(R.drawable.hearts3)
+                        "4" -> view.setImageResource(R.drawable.hearts4)
+                        "5" -> view.setImageResource(R.drawable.hearts5)
+                        "6" -> view.setImageResource(R.drawable.hearts6)
+                        "7" -> view.setImageResource(R.drawable.hearts7)
+                        "8" -> view.setImageResource(R.drawable.hearts8)
+                        "9" -> view.setImageResource(R.drawable.hearts9)
+                        "10" -> view.setImageResource(R.drawable.hearts10)
                         "Valet" -> {
-                            view.setImageResource(R.drawable.diamondsjack)
+                            view.setImageResource(R.drawable.heartsjack)
                             view.setBackgroundColor(Color.rgb(255, 255, 255));
                         }
                         "Reine" -> {
-                            view.setImageResource(R.drawable.diamondsqueen)
+                            view.setImageResource(R.drawable.heartsqueen)
                             view.setBackgroundColor(Color.rgb(255, 255, 255));
                         }
                         "Roi" -> {
-                            view.setImageResource(R.drawable.diamondsking)
+                            view.setImageResource(R.drawable.heartsking)
                             view.setBackgroundColor(Color.rgb(255, 255, 255));
                         }
                     }

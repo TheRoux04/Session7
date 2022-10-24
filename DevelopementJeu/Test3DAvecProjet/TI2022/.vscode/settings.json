@@ -1,0 +1,31 @@
+{
+    "files.associations": {
+        "new": "cpp",
+        "functional": "cpp",
+        "initializer_list": "cpp",
+        "chrono": "cpp",
+        "algorithm": "cpp",
+        "atomic": "cpp",
+        "*.tcc": "cpp",
+        "cstdlib": "cpp",
+        "array": "cpp",
+        "cmath": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "exception": "cpp",
+        "string_view": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "istream": "cpp",
+        "numeric": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp",
+        "system_error": "cpp",
+        "utility": "cpp"
+    },
+    "cmake.configureOnOpen": false
+}
