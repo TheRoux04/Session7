@@ -5,4 +5,6 @@
     <string name="item1">Item1</string>
     <string name="item3" />
     <string name="item2" />
+    <string name="label_simple_dialog" />
+    <string name="label_dialog_with_data" />
 </resources>

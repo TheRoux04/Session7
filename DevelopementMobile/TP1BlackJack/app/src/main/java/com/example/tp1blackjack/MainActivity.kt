@@ -1,5 +1,6 @@
 package com.example.tp1blackjack
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -25,11 +26,28 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val stats = findViewById<NavigationView>(R.id.stats)
 
-        stats.visibility = View.GONE
-        startNewHands()
+        viewModel = ViewModelProvider(this)[GameViewModel::class.java]
 
+        viewModel.deck.observe(this) {
+            Log.d("deck", it.toString())
+        }
+
+        showBet()
+
+        stats.visibility = View.GONE
+
+        viewModel.startGame.observe(this) {
+            if (it) {
+                startNewHands()
+            }
+        }
     }
 
+    fun showBet(){
+        FragmentBet().show(supportFragmentManager, "fragment_bet")
+    }
+
+    @SuppressLint("SetTextI18n")
     fun startNewHands(){
 
         var firstHand: Boolean = true
@@ -39,34 +57,47 @@ class MainActivity : AppCompatActivity() {
         val dealerCards = findViewById<ViewGroup>(R.id.dealerLayout)
         val btnHit = findViewById<View>(R.id.btnHit)
         val btnStand = findViewById<View>(R.id.btnStand)
-        viewModel = ViewModelProvider(this)[GameViewModel::class.java]
+        val txtMainBet = findViewById<TextView>(R.id.txtMainBet)
+        val txtBank = findViewById<TextView>(R.id.txtBank)
+
+        viewModel.dealerCards.value = listOf()
+        viewModel.playerCards.value = listOf()
         dealerCards.removeAllViews()
         playerCards.removeAllViews()
+        btnHit.isEnabled = false
+        btnStand.isEnabled = false
         txtDealerScore.text = "0"
         txtPlayerScore.text = "0"
+        txtMainBet.text = "Bet: ${viewModel.bet.value}"
 
         if (viewModel.totalCardsDeck < 20){
             viewModel.changeDeck()
         }
 
-        viewModel.deck.observe(this) {
+        viewModel.bank.observe(this){
+            txtBank.text = "Bank: $it"
+        }
+
+        viewModel.getCard().observe(this) {
+            viewModel.addPlayerCard(it)
             viewModel.getCard().observe(this) {
-                viewModel.addPlayerCard(it)
+                viewModel.addDealerCard(it)
                 viewModel.getCard().observe(this) {
-                    viewModel.addDealerCard(it)
+                    viewModel.addPlayerCard(it)
                     viewModel.getCard().observe(this) {
-                        viewModel.addPlayerCard(it)
-                        viewModel.getCard().observe(this) {
-                            viewModel.addDealerCard(it)
-                            if (viewModel.getPlayerScore() == 21){
-                                Log.d("Player", "Blackjack")
-                                Log.d("Dealer", "Lose")
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    btnHit.isEnabled = false
-                                    btnStand.isEnabled = false
-                                    startNewHands()
-                                }, 2000)
-                            }
+                        viewModel.addDealerCard(it)
+                        if (viewModel.getPlayerScore() == 21){
+                            Log.d("Player", "Blackjack")
+                            Log.d("Dealer", "Lose")
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                btnHit.isEnabled = false
+                                btnStand.isEnabled = false
+                                viewModel.changeBankAmountWin(21)
+                                showBet()
+                            }, 2000)
+                        } else{
+                            btnHit.isEnabled = true
+                            btnStand.isEnabled = true
                         }
                     }
                 }
@@ -74,8 +105,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.dealerCards.observe(this) {
-            btnHit.isEnabled = false
-            btnStand.isEnabled = false
             dealerCards.removeAllViews()
             if (it.size <= 2 && viewModel.getPlayerScore() != 21){
                 firstHand = true
@@ -86,27 +115,22 @@ class MainActivity : AppCompatActivity() {
                 Log.d("Dealer", viewModel.getDealerScore().toString())
                 firstHand = false
             }
-            btnHit.isEnabled = true
-            btnStand.isEnabled = true
         }
 
         viewModel.playerCards.observe(this) {
-            btnHit.isEnabled = false
-            btnStand.isEnabled = false
             playerCards.removeAllViews()
             for (card in it) {
                 playerCards.addView(getImageCard(card, false))
                 txtPlayerScore.text = viewModel.getPlayerScore().toString()
                 //Log.d("Player", card.rank + " " + card.suit)
             }
-            btnHit.isEnabled = true
-            btnStand.isEnabled = true
         }
 
-        /*viewModel.displayStats().observe(this) {
+        viewModel.displayStats().observe(this) { it ->
             val cardLeftLay = findViewById<LinearLayout>(R.id.cardLeftLayout)
             val chancesLay = findViewById<LinearLayout>(R.id.chancesLayout)
             val totalCard = findViewById<TextView>(R.id.txtCardsLeft)
+
             cardLeftLay.removeAllViews()
             chancesLay.removeAllViews()
             for (stat in it) {
@@ -119,24 +143,22 @@ class MainActivity : AppCompatActivity() {
                     gravity = Gravity.CENTER
                 })
 
+                val txtChances = TextView(this)
+                chancesLay.addView(txtChances.apply {
+                    text = ((stat.leftCard.toDouble() / 364.0) * 100).toString().take(4) + "%"
+                    Log.d("left card", stat.leftCard.toString())
+                    Log.d("total", viewModel.totalCardsDeck.toString())
+                    Log.d("divisé", ((stat.leftCard.toDouble() / viewModel.totalCardsDeck.toDouble())).toString())
+                    Log.d("fois 100", ((stat.leftCard.toDouble() / viewModel.totalCardsDeck.toDouble()) * 100).toString())
+
+                    textSize = 24f
+                    setTextColor(Color.BLACK)
+                    setBackgroundColor(Color.parseColor("#4CAF50"))
+                    gravity = Gravity.CENTER
+                })
             }
-            /*
-            viewModel.getPourcentage().observe(this) {
-                for (pourcentage in it) {
-                    val txtChances = TextView(this)
-                    chancesLay.addView(txtChances.apply {
-                        text = pourcentage
-                        textSize = 24f
-                        setTextColor(Color.BLACK)
-                        setBackgroundColor(Color.parseColor("#4CAF50"))
-                        gravity = Gravity.CENTER
-                    })
-                }
-            }*/
-
             totalCard.text = viewModel.totalCardsDeck.toString()
-        }*/
-
+        }
     }
 
     fun OpenStats(view: View){
@@ -147,8 +169,6 @@ class MainActivity : AppCompatActivity() {
         }else{
             stats.visibility = View.VISIBLE
         }
-
-
     }
 
     fun Hit(v : View){
@@ -164,62 +184,74 @@ class MainActivity : AppCompatActivity() {
         viewModel.getCard().observe(this) {
             viewModel.addPlayerCard(it)
             if (viewModel.getPlayerScore() > 21){
-                btnHit.isEnabled = false
-                btnStand.isEnabled = false
                 Log.d("Player", "Bust")
                 Log.d("Dealer", "Win")
-                for (card in dealCards) {
-                    dealerCards.addView(getImageCard(card, false))
-                    txtDealerScore.text = viewModel.getDealerScore().toString()
-                }
+                dealerCards.removeViewAt(0)
+                dealerCards.addView(getImageCard(dealCards[0], false))
+                txtDealerScore.text = viewModel.getDealerScore(true).toString()
+                viewModel.updateFaceDownCard()
+                viewModel.changeBankAmountWin(0)
                 Handler(Looper.getMainLooper()).postDelayed({
-                    startNewHands()
+                    showBet()
                 }, 2000)
-
-            } else if (viewModel.getPlayerScore() == 21){
-                Handler(Looper.getMainLooper()).postDelayed({
-                    startNewHands()
-                }, 2000)
+            } else {
+                btnHit.isEnabled = true
+                btnStand.isEnabled = true
             }
         }
     }
 
     fun Stand(v : View){
+        val dealerCards = findViewById<ViewGroup>(R.id.dealerLayout)
+        val dealCards = viewModel.dealerCards.value!!
+        val txtDealerScore = findViewById<TextView>(R.id.dealerScore)
         val btnHit = findViewById<View>(R.id.btnHit)
         val btnStand = findViewById<View>(R.id.btnStand)
         btnHit.isEnabled = false
         btnStand.isEnabled = false
-        if(viewModel.getDealerScore() < 17 && viewModel.getDealerScore() < viewModel.getPlayerScore()){
+        if(viewModel.getDealerScore() < 17){
             viewModel.getCard().observe(this) {
                 viewModel.addDealerCard(it)
                 if (viewModel.getDealerScore() > 21){
                     Log.d("Dealer", "Bust")
                     Log.d("Player", "Win")
+                    viewModel.changeBankAmountWin(1)
                     Handler(Looper.getMainLooper()).postDelayed({
-                        startNewHands()
+                        showBet()
                     }, 2000)
                 }else if (viewModel.getDealerScore() < 17 && viewModel.getDealerScore() < viewModel.getPlayerScore()){
                     Handler(Looper.getMainLooper()).postDelayed({
                         Stand(v)
-                    }, 1000)
+                    }, 2000)
 
                 } else if (viewModel.getDealerScore() > 16 && viewModel.getDealerScore() > viewModel.getPlayerScore()){
                     Log.d("Dealer", "Win")
+                    viewModel.changeBankAmountWin(0)
                     Handler(Looper.getMainLooper()).postDelayed({
-                        startNewHands()
+                        showBet()
                     }, 2000)
                 } else if (viewModel.getDealerScore() == viewModel.getPlayerScore()){
                     Log.d("Dealer", "Tie")
+                    viewModel.changeBankAmountWin(2)
                     Handler(Looper.getMainLooper()).postDelayed({
-                        startNewHands()
+                        showBet()
                     }, 2000)
                 } else {
                     Log.d("Player", "Win")
+                    viewModel.changeBankAmountWin(1)
                     Handler(Looper.getMainLooper()).postDelayed({
-                        startNewHands()
+                        showBet()
                     }, 2000)
                 }
             }
+        } else {
+            dealerCards.removeViewAt(0)
+            dealerCards.addView(getImageCard(dealCards[0], false))
+            txtDealerScore.text = viewModel.getDealerScore(true).toString()
+            viewModel.updateFaceDownCard()
+            Handler(Looper.getMainLooper()).postDelayed({
+                showBet()
+            }, 2000)
         }
     }
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dimen_48" />
+    <dimen name="wrap_constraints" />
+    <dimen name="dimen_12" />
+    <dimen name="font_size_16" />
+</resources>

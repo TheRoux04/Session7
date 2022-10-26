@@ -8,12 +8,12 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/stats"
-            android:layout_width="500dp"
-            android:layout_height="match_parent"
-            app:menu="@menu/navigation_drawer"
-            tools:ignore="MissingConstraints" >
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/stats"
+        android:layout_width="500dp"
+        android:layout_height="match_parent"
+        app:menu="@menu/navigation_drawer"
+        tools:ignore="MissingConstraints">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -330,55 +330,54 @@
             android:id="@+id/btnHit"
             android:layout_width="217dp"
             android:layout_height="81dp"
+            android:layout_marginStart="1032dp"
             android:onClick="Hit"
             android:text="Hit"
             android:textSize="34sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView4"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.113" />
 
         <Button
             android:id="@+id/btnStand"
             android:layout_width="217dp"
             android:layout_height="81dp"
+            android:layout_marginEnd="36dp"
             android:onClick="Stand"
             android:text="Stand"
             android:textSize="34sp"
-            app:layout_constraintBottom_toBottomOf="@+id/btnHit"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/editTextNumber"
-            app:layout_constraintTop_toTopOf="@+id/btnHit" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.836" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/txtMainBet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bet:"
             android:textColor="#000000"
             android:textSize="48sp"
-            app:layout_constraintBottom_toBottomOf="@+id/btnHit"
-            app:layout_constraintEnd_toStartOf="@+id/editTextNumber"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btnHit"
-            app:layout_constraintTop_toTopOf="@+id/btnHit"
-            app:layout_constraintVertical_bias="0.514" />
+            app:layout_constraintBottom_toBottomOf="@+id/txtBank"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.524"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.918" />
 
-        <EditText
-            android:id="@+id/editTextNumber"
-            android:layout_width="191dp"
+        <TextView
+            android:id="@+id/txtBank"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="number"
-            android:textSize="34sp"
-            app:layout_constraintBottom_toBottomOf="@+id/btnHit"
-            app:layout_constraintEnd_toStartOf="@+id/btnStand"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView4"
-            app:layout_constraintTop_toTopOf="@+id/btnHit"
-            app:layout_constraintVertical_bias="0.514" />
+            android:text="BANK : 1000"
+            android:textColor="#000000"
+            android:textSize="60sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.102"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -410,11 +409,14 @@
         android:id="@+id/button"
         android:layout_width="56dp"
         android:layout_height="140dp"
+        android:layout_marginTop="32dp"
         android:onClick="OpenStats"
         android:text="Stats"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/stats"
-        tools:layout_editor_absoluteY="42dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
