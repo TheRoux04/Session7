@@ -144,6 +144,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun displayStats() : LiveData<List<Stats>> {
+		allStats.value = statsDAO.getAll()
         return allStats
     }
 
