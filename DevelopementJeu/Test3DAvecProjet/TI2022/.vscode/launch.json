@@ -1,0 +1,61 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Windows",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/Build/Programme.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/Build/",
+      "environment": [],
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+      "setupCommands": [
+        {
+          "description": "Activer l'impression en mode Pretty pour gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "Windows"
+    },
+    {
+      "name": "Mac - (lldb) Lancer",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/Build/Programme",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/Build/",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb"
+    },
+    {
+      "name": "Linux - (gdb) Lancer",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/Build/Programme",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/Build/",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Activer l'impression en mode Pretty pour gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Définir la syntaxe désassemblage sur Intel",
+          "text": "-gdb-set disassembly-flavor intel",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

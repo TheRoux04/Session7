@@ -46,10 +46,10 @@ func mediane(nbs []int) int {
 	} else {
 		nb1 := nbs[(len(nbs)/2)-1]
 		nb2 := nbs[len(nbs)/2]
-		nbsPourMoyenne := [2]int{nb1, nb2}
+		var nbsPourMoyenne = [2]int{nb1, nb2}
 		laMediane = moyenne(nbsPourMoyenne)
 	}
-
+	return laMediane
 }
 
 func sort(nbs []int) []int {
