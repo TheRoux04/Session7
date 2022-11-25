@@ -33,11 +33,11 @@ func main() {
 		if err != nil {
 			continue
 		}
-		for i, _ := range server.RemoteAddr().Network() {
+		/*for i, _ := range server.RemoteAddr().Network() {
 			if int8(i) == clientAddr.String()[int8(i)] {
 
 			}
-		}
+		}*/
 		waiting++
 		if timeToWait*3 == waiting {
 			waiting = 0
