@@ -23,7 +23,7 @@ func main() {
 	openConnection()
 	http.HandleFunc("/", home)
 	http.HandleFunc("/client", func(w http.ResponseWriter, r *http.Request) {
-		client(clientsChan, w, r, nbConnections)
+		client(clientsChan, techChan, w, r, nbConnections)
 	})
 	http.HandleFunc("/tech", tech)
 	http.HandleFunc("/admin", adminMenu)
@@ -33,6 +33,7 @@ func main() {
 	http.HandleFunc("/delete", deleteTech)
 	http.HandleFunc("/error404", error404)
 	http.HandleFunc("/logout", logout)
+	http.HandleFunc("connecxionLog", connexionLog)
 	http.HandleFunc("/wsClient", func(w http.ResponseWriter, r *http.Request) {
 		wsClient(clientsChan, techChan, w, r, nbConnections)
 	})
@@ -55,13 +56,10 @@ func wsClient(clientsChan map[int]chan []byte, techChan chan []byte, w http.Resp
 	defer c.Close()
 	log.Println("wsClient")
 	go sendMessageClient(c, techChan, clientId)
-
 	client := clientsChan[clientId]
-	log.Println("client", client)
-	log.Println("clientId", clientId)
+	clientId++
 	for {
 		msg := <-client
-		log.Println("yowassu", string(msg))
 		c.WriteMessage(websocket.TextMessage, msg)
 		log.Println("Le client a reçu le message")
 	}
@@ -83,14 +81,10 @@ func sendMessageClient(c *websocket.Conn, techChan chan []byte, clientId int) {
 func wsTech(clientsChan map[int]chan []byte, techChan chan []byte, w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println("Tech disconnected")
-		for _, client := range clientsChan {
-			client <- []byte("Tech disconnected")
-		}
 		return
 	}
 	defer c.Close()
-	log.Println("wsClient")
+	log.Println("wsTech")
 	go sendMessageTech(c, clientsChan)
 	for {
 		msg := <-techChan
@@ -105,7 +99,11 @@ func sendMessageTech(c *websocket.Conn, clientsChan map[int]chan []byte) {
 		log.Println("msgTech")
 		_, message, err := c.ReadMessage()
 		if err != nil {
-			log.Println("read:", err)
+			log.Println("Tech disconnected")
+			for _, client := range clientsChan {
+				client <- []byte("Tech disconnected")
+				close(client)
+			}
 			break
 		}
 		messageComponents := strings.Split(string(message), ":")
@@ -113,8 +111,6 @@ func sendMessageTech(c *websocket.Conn, clientsChan map[int]chan []byte) {
 		if messageComponents[0] == "Client disconnected" {
 			close(clientsChan[value])
 		}
-		log.Println("yoyoyo", clientsChan[value])
-		log.Println("yoyoyo", value)
 		clientsChan[value] <- message
 	}
 }
@@ -193,12 +189,18 @@ func whoConnected(token string) int {
 	return whoConnected
 }
 
-func client(clientsChan map[int]chan []byte, w http.ResponseWriter, r *http.Request, clientId int) {
+func client(clientsChan map[int]chan []byte, techChan chan []byte, w http.ResponseWriter, r *http.Request, clientId int) {
 	vueRaw, _ := os.ReadFile("./views/client.html")
 	vue := string(vueRaw)
 	w.Header().Set("Content-Type", "text/html")
+
+	if techChan == nil {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	}
+
 	clientChan := make(chan []byte)
 	clientsChan[clientId] = clientChan
+	vue = strings.Replace(vue, "###CLIENTID###", strconv.Itoa(clientId), 1)
 	clientId++
 
 	io.WriteString(w, vue)
@@ -383,4 +385,18 @@ func generateToken(username string) string {
 	return base64.StdEncoding.EncodeToString(hash)
 }
 
-//func modifyTech
+func connexionLog(w http.ResponseWriter, r *http.Request) {
+	vueRaw, _ := os.ReadFile("./views/connexionLog.html")
+	vue := string(vueRaw)
+	w.Header().Set("Content-Type", "text/html")
+
+	theCookie, err := r.Cookie("tokenSession")
+	if err != nil {
+		log.Fatal(err)
+	}
+	if whoConnected(theCookie.Value) == 0 {
+		//http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	}
+
+	io.WriteString(w, vue)
+}

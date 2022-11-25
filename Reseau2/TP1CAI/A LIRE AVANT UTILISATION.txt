@@ -1,0 +1,12 @@
+J'ai pas reussi à tout faire donc il y a des bug par si par la.
+
+Losque tu commence un chat il faut que le technicien commence absolument parce qu'il y a un bug dans l'autre 
+sans et je n'arrivait pas à empecher le client d'ecrit sans avoir un autre probleme plus tard.
+
+Je n'est pas fait les logs
+
+Le multi chat ne marche pas non plus donc tu peut communiquer 1 à 1 seulement.
+
+
+Connexion admin : admin - admin
+Une connexion tech : tech2 - tech2
