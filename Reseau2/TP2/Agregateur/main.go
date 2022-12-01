@@ -1,17 +1,19 @@
 package main
 
 import (
+	"fmt"
+	"github.com/pion/dtls/v2"
 	"net"
 )
 
 func main() {
-	udpServer, _ := net.ResolveUDPAddr("udp", ":8000")
-	conn, _ := net.DialUDP("udp", nil, udpServer)
-	defer conn.Close()
-	conn.Write([]byte("Connect pls"))
+	config := &dtls.Config{
+		InsecureSkipVerify: true,
+	}
+	conn, _ := dtls.Dial("udp", &net.UDPAddr{Port: 8000}, config)
 	for {
-		buf := make([]byte, 1024)
-		conn.Read(buf)
-		println(buf)
+		var buffer = make([]byte, 256)
+		conn.Read(buffer)
+		fmt.Println(string(buffer))
 	}
 }

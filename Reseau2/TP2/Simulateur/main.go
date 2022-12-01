@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
+	"github.com/pion/dtls/v2"
 	"math/rand"
 	"net"
 	"strconv"
@@ -9,35 +11,41 @@ import (
 )
 
 func main() {
-	listener, _ := net.ListenUDP("udp", &net.UDPAddr{Port: 8000})
-	defer listener.Close()
-	buf := make([]byte, 1024)
-
+	cert, _ := tls.LoadX509KeyPair("localhost/cert.pem", "localhost/key.pem")
+	config := &dtls.Config{
+		Certificates: []tls.Certificate{cert},
+	}
+	listener, _ := dtls.Listen("udp", &net.UDPAddr{Port: 8000}, config)
 	for {
 		var sondeChan = make(chan string)
+		var connectionChan = make(chan net.Conn)
 		for i := 0; i < 10; i++ {
 			go sondes(i, sondeChan)
 		}
-		go noConnnect(sondeChan)
+		go manageConnection(sondeChan)
 		for {
-			_, clientAddr, _ := listener.ReadFromUDP(buf)
-			go manage(sondeChan, listener, clientAddr)
+			conn, _ := listener.Accept()
+			connectionChan <- conn
 		}
 	}
-
 }
 
-func noConnnect(sondeChan <-chan string) {
+func manageConnection(sondeChan <-chan string, connectionChan <-chan net.Conn) {
+	connection := make(map[net.Conn]string)
 	for {
-		<-sondeChan
-		//time.Sleep(time.Second * 5)
-		println("No connect")
-	}
-}
+		select {
+		case newConn := <-connectionChan:
+			connection[newConn] = ""
+		case newTemp := <-sondeChan:
+			for conn, _ := range connection {
+				stream := []byte(data)
+				_, err := conn.Write(stream)
+				if err != nil {
+					return
+				}
+			}
 
-func manage(sondeChan <-chan string, server *net.UDPConn, address *net.UDPAddr) {
-	for {
-		//server.WriteToUDP([]byte(<-sondeChan), address)
+		}
 		fmt.Println(<-sondeChan)
 		//time.Sleep(time.Second * 5)
 		println("Send")
@@ -57,25 +65,28 @@ func sondes(id int, sondeChan chan<- string) {
 			for i := 0; i < randTick; i++ {
 				time.Sleep(time.Second * 5)
 			}
-			sondeChan <- strconv.Itoa(temperature)
+			t := time.Now().Unix()
+			sondeChan <- "Sonde " + strconv.Itoa(id) + "/ Start /" + strconv.FormatInt(t, 10)
 		}
 
 		changeTemperature = rand.Intn(20-10) + 10
 		if temperature >= 200 {
 			time.Sleep(time.Second * 5)
 			goodTemperature = true
-			sondeChan <- strconv.Itoa(temperature)
+			t := time.Now().Unix()
+			sondeChan <- "Sonde " + strconv.Itoa(id) + "/ Cooked /" + strconv.FormatInt(t, 10)
 		}
 
 		if !goodTemperature {
 			temperature = temperature + changeTemperature
 		} else {
+			t := time.Now().Unix()
 			if temperature-changeTemperature <= 20 {
 				temperature = 20
-				sondeChan <- strconv.Itoa(temperature)
+				sondeChan <- "Sonde " + strconv.Itoa(id) + "/ Ready /" + strconv.FormatInt(t, 10)
 			} else {
 				temperature = temperature - changeTemperature
-				sondeChan <- strconv.Itoa(temperature)
+				sondeChan <- "Sonde " + strconv.Itoa(id) + "/ Ready /" + strconv.FormatInt(t, 10)
 			}
 		}
 

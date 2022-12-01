@@ -1,6 +1,7 @@
 # TP2
 
 Travail individuel, remise le 12 décembre 23h55.
+Lien vers le Github classroom pour la remise: https://classroom.github.com/a/6JeqiVJ1.
 
 ## Mise en situation
 
@@ -36,7 +37,7 @@ L'agrégateur va chercher les informations des 3 modules et insère le tout dans
 
 1. Sondes: Insérez seulement dans la BD les 3 événements suivants, 1 seul enregistrement par jambon:
    1. Nouvelle cuisson: Moment lorsque la température passe de 20°C à plus
-   2. Fin de la cuisson: Moment lorsque la température atteint plus de 400°C
+   2. Fin de la cuisson: Moment lorsque la température atteint plus de 200°C
    3. Fin du refroidissement: Moment lorsque la température revient à 20°C
 2. Balances: Insérez les données de manières lisibles (timestamp, type et poids, pas en hexadécimal ni en binaire)
 3. Réception: Insérez les nouvelles réceptions seulement, n'insérez pas de doublons. Allez vérifier les nouvelles réceptions à toutes les 30 sec, 1 min ou 2 min, à votre choix.
