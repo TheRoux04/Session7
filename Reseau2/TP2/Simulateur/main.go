@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"github.com/pion/dtls/v2"
 	"io"
-	"log"
 	"math/rand"
 	"net"
 	"strconv"
@@ -22,17 +21,17 @@ func main() {
 	}
 	listener, _ := dtls.Listen("udp", &net.UDPAddr{Port: 8000}, config)
 
-	listner, err := net.Listen("tcp", ":8001")
+	/*listner, err := net.Listen("tcp", ":8001")
 	if err != nil {
 		log.Fatalln(err)
-	}
+	}*/
 
 	var sondeChan = make(chan string)
 	var balanceChan = make(chan string)
 	var connectionChan = make(chan net.Conn)
 	var asConnection = false
 	for i := 0; i < 10; i++ {
-		//go sondes(sondeChan)
+		go sondes(sondeChan)
 	}
 	go manageConnection(sondeChan, balanceChan, connectionChan)
 	for {
@@ -78,47 +77,47 @@ func sondes(sondeChan chan<- string) {
 	var randTick int
 	var temperature = 10
 	var goodTemperature = false
-	var changeTemperature int
-	randTick = rand.Intn(11) + 1
+	var changeTemperature = 0
+
 	var idSonde = 0
+	var t int64
 	ticker := time.NewTicker(5 * time.Second)
 
 	for {
-		if temperature == 10 {
+		if temperature == 10 || temperature == 0 {
+			randTick = rand.Intn(12-1) + 1
 			id++
 			idSonde = id
 			for i := 0; i < randTick; i++ {
 				<-ticker.C
 			}
-			t := time.Now().Unix()
-			sondeChan <- strconv.Itoa(idSonde) + "/Start/" + strconv.FormatInt(t, 10)
-		}
-		changeTemperature = rand.Intn(20-10) + 10
-		<-ticker.C
-
-		if temperature >= 200 {
-			goodTemperature = true
-			t := time.Now().Unix()
-			sondeChan <- strconv.Itoa(idSonde) + "/Cooked/" + strconv.FormatInt(t, 10)
-		}
-
-		if !goodTemperature {
-			temperature = temperature + changeTemperature
 		} else {
-			t := time.Now().Unix()
-			if temperature-changeTemperature <= 20 {
-				temperature = 20
-				sondeChan <- strconv.Itoa(idSonde) + "/Ready/" + strconv.FormatInt(t, 10)
-			} else {
-				temperature = temperature - changeTemperature
+			changeTemperature = rand.Intn(20-10) + 10
+
+			if temperature >= 200 {
+				goodTemperature = true
 			}
+
+			if !goodTemperature {
+				temperature = temperature + changeTemperature
+			} else {
+				if temperature-changeTemperature <= 20 {
+					temperature = 20
+				} else {
+					temperature = temperature - changeTemperature
+				}
+			}
+
+			<-ticker.C
+			println("Sonde " + strconv.Itoa(idSonde) + " : " + strconv.Itoa(temperature))
 		}
+		t = time.Now().Unix()
+		sondeChan <- strconv.Itoa(idSonde) + "/" + strconv.Itoa(temperature) + "/" + strconv.FormatInt(t, 10)
 
 		if temperature == 20 {
 			temperature = 10
+			changeTemperature = 0
 		}
-
-		println("Sonde " + strconv.Itoa(idSonde) + " : " + strconv.Itoa(temperature))
 	}
 }
 
