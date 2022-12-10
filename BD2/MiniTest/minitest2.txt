@@ -1,0 +1,94 @@
+CREATE FUNCTION fnClients(@qualite nvarchar(20)) 
+RETURNS TABLE
+AS
+   RETURN SELECT ClientNomContact, ClientNomCompagnie
+          FROM Clients WHERE ClientAppreciation = @qualite
+
+
+
+
+CREATE FUNCTION fnMontant( @prix money, @tps float, @tvq float) RETURNS money
+AS
+BEGIN
+   RETURN (@prix *(1+@tps)* (1+@tvq))
+END
+
+
+CREATE FUNCTION fnActeursMorts()
+    RETURNS @table_morts TABLE
+    (code int,
+     nom nvarchar(25),
+     prenom nvarchar(25),
+     anneesmort int)
+AS
+BEGIN
+   INSERT INTO @table_morts
+   SELECT ActCode, ActNom, ActPrenom, ActAnsMort
+   FROM Acteurs
+   WHERE ActAnsMort > 0
+   RETURN @table_morts
+END
+
+
+CREATE PROC ps_SupprimerActeur
+    @code int
+AS
+BEGIN
+    DELETE FROM Acteurs
+    WHERE ActCode = @code
+    PRINT(‘Il y a eu’ + CAST(@@ROWCOUNT AS nvarchar(5)) + ‘ suppressions!’
+END
+
+
+
+CREATE PROC psTest2(@nombre int, @sortie nvarchar(100) OUTPUT)
+AS
+BEGIN
+  SET @sortie = N’Rien!’
+  If @nombre > -1 AND @nombre <= 100
+    SET @sortie = N’Exemple absurde’
+  Else if @nombre > 999
+    SET @sortie = N’Rien non plus’
+END
+
+
+
+CREATE PROCEDURE sp_ObtenirInventaire
+@location varchar(10)
+AS
+SELECT Produit, Quantite
+FROM Inventaire
+WHERE Entrepot = @location
+
+
+CREATE PROC psTest(@nombre int=1)
+AS
+BEGIN
+  DECLARE @retour int
+  SET @retour = 99
+  If @nombre > -1 AND @nombre <= 100
+     SET @retour = 0
+  Else if @nombre > 999
+     SET @retour = 10
+  RETURN @retour
+END
+
+
+
+
+3.3.1	Fonctions de table en ligne
+
+SELECT * FROM dbo.fnClients("bonne")
+
+IF EXISTS (fnActeursMorts())
+
+3.3.2	Procédures stockées
+
+EXECUTE @variable = sp_ObtenirInventaire("Joliette")
+
+EXEC sp_NettoyerVieuxClients()
+
+3.3.3	Fonctions scalaires
+
+SELECT * FROM Clients WHERE ClientAge = fnAgeMinimum()
+

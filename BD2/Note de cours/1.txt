@@ -1,0 +1,45 @@
+CREATE DATABASE Atelier1
+ON PRIMARY
+(
+NAME = 'Atelier1',
+FILENAME = N'C:\Users\Public\Atelier1.mdf',
+SIZE = 5MB,
+MAXSIZE = 10MB,
+FILEGROWTH = 1MB
+)
+LOG ON
+(
+NAME = 'Atelier1_log',
+FILENAME = N'C:\Users\Public\Atelier1_log.ldf',
+SIZE = 1MB,
+MAXSIZE = 2MB,
+FILEGROWTH = 1MB
+)
+
+GO
+
+
+
+
+Plus sécuritaire
+Plusieurs personne peuvent y accéder en même temps
+Permet different niveau d’acces
+
+
+
+conn.Execute "sp_supprimerRace " & lstRace.Value
+conn.Close
+
+
+
+conn.Open "Provider='SQLOLEDB'; Data Source='J-C236-OL-09'; Initial Catalog = 'ProgressQuest'; User id = 'SprayZ'; Password= 'PsychoPunishSprayz321.'"
+Dim rs As New ADODB.Recordset
+rs.Open "SELECT * FROM vueRace ORDER BY RaceNom", conn
+lstRace.RowSource = ""
+Do While Not rs.EOF
+    lstRace.AddItem (rs.Fields("RaceCode") & ";" & rs.Fields("RaceNom"))
+    rs.MoveNext
+Loop
+
+rs.Close
+

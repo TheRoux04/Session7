@@ -1,0 +1,288 @@
+CREATE DATABASE GestionTaxi
+ON PRIMARY
+(
+	NAME = "GestionTaxi",
+	FILENAME = "C:/../../GestionT.MDF",
+	SIZE = "100M",
+	MAXSIZE = "100M",
+	FILEGROWTH = "10M"
+)
+LOG ON 
+(
+	NAME = "GestionTaxi",
+	FILENAME = "C:/../../GestionT.LDF",
+	SIZE = "10M",
+	MAXSIZE = "10M",
+	FILEGROWTH = "1M"
+)
+
+
+USE GestionTaxi
+GO
+
+
+
+CREATE TABLE Vehicule (
+	IdVehicule INT NOT NULL IDENTITY(1,1),
+	DateMaintenanceVehicule DATE
+	CONSTRAINT PK_Vehicile PRIMARY KEY (IdVehicule)
+)
+GO
+
+CREATE TABLE Conducteur(
+	IdContucteur INT NOT NULL IDENTITY(1,1),
+	NomConducteur NVARCHAR(30)
+	CONSTRAINT PK_Conducteur PRIMARY KEY (IdConducteur)
+)
+GO
+
+
+CREATE TABLE VehiculeConducteur (
+	IdVehiCondVehicule
+	IdVehiCondConducteur
+)
+
+
+CREATE TABLE Appel(
+	IdAppel INT NOT NULL IDENTITY(1,1),
+	HeureAppel DATE
+	CONSTRAINT PK_Appel PRIMARY KEY (IdAppel)
+)
+GO
+
+CREATE TABLE Client(
+	IdCLientINT NOT NULL IDENTITY(1,1),
+	NomClient NVARCHAR(30),
+	AdresseClient NVARCHAR(80)
+	CONSTRAINT PK_Client PRIMARY KEY (IdClient)
+)
+GO
+
+ALTER TABLE VehiculeConducteur
+ADD CONSTRAINT FK_VehiCondVehicule FOREIGH KEY IdVehiCondVehicule REFERENCES Vehicule (IdVehicule)
+    CONSTRAINT FK_VehiCondConducteur FOREIGH KEY IdVehiCondConducteur REFERENCES Conducteur (IdConducteur)
+GO
+
+ALTER TABLE Appel
+ADD CONSTRAINT FK_ConducteurId FOREIGH KEY IdAppelConducteur REFERENCES Conducteur (IdConducteur)
+    CONSTRAINT FK_ClientId FOREIGH KEY IdAppelClient REFERENCES Client (IdClient)
+GO
+
+
+
+CREATE PROCEDURE sp_ajoutNotification
+@conducteurId int, @typeNotification int, @raison nvarchar(100)
+AS
+BEGIN
+	
+	DECLARE @nbAvertissement int
+	DECLARE @nbSanction int
+	INSERT INTO Notifications (TypeNotification, RaisonNotification, IdConducteur) VALUES (@typeNotification, @raison, @conducteurId)
+	SET @nbAvertissement = COUNT(IdNotification FROM Notification WHERE IdConducteur = @conducteurId AND TypeNotification = 2)
+	IF (@nbAvertissement == 3)
+	BEGIN
+		DELETE * FROM Notification WHERE IdConducteur = @conducteurId AND TypeNotification = 2
+		INSERT INTO Notifications (TypeNotification, RaisonNotification, IdConducteur) VALUES (3, "3 avertissements", @conducteurId)
+		SET @nbSanction = COUNT(IdNotification FROM Notification WHERE IdConducteur = @conducteurId AND TypeNotification = 3)
+		IF (@nbSanction == 3)
+		BEGIN
+			DELETE * FROM Notification WHERE IdConducteur = @conducteurId AND TypeNotification = 3
+			INSERT INTO Notifications (TypeNotification, RaisonNotification, IdConducteur) VALUES (4, "3 sanctions", @conducteurId)
+		END
+	END
+END
+GO
+
+
+
+
+CREATE PRODEDURE sp_verificationPunition
+AS
+BEGIN
+	DECLARE @lutinId int
+	DECLARE @jobLutin varchar(20)
+	DECLARE @nbCadeau int
+	DECLARE curLutin CURSOR
+
+	FOR SELECT IdLutin, JobLutin FROM Lutins
+	OPEN curLutin
+	FETCH NEXT FROM curLutin
+	INTO @lutinId, @jobLutin
+	
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		SET @nbCadeau = COUNT(IdCadeau FROM Cadeaux WHERE IdLutin = @lutinId)
+		IF (@nbCadeau > 1)
+		BEGIN
+			IF (@jobLutin = 'Lutin emballeur')
+			BEGIN
+				INSERT INTO ListeNoire (IdLutin, NbPunition) VALUES (@lutinId, @nbCadeau * 1)
+			END
+			ELSE IF (@jobLutin = 'Lutin menuisier')
+			BEGIN
+				INSERT INTO ListeNoire (IdLutin, NbPunition) VALUES (@lutinId, @nbCadeau * 2)
+			END
+			ELSE
+			BEGIN
+				INSERT INTO ListeNoire (IdLutin, NbPunition) VALUES (@lutinId, @nbCadeau * 3)
+			END
+		END
+		FETCH NEXT FROM curLutin
+		INTO @lutinId, @jobLutin
+	END
+END
+GO
+
+
+
+
+
+CREATE TRIGGER trigCadeau
+ON Cadeau
+AFTER INSERT
+AS
+BEGIN
+	DECLARE @enfantId int
+	DECLARE @enfantSage int
+	DECLARE @poidCadeau = int
+	DECLARE @historiqueId
+
+	SELECT @enfantId = IdEnfant FROM INSERTED
+	SELECT @cadeauId = IdCadeau FROM INSERTED
+	SELECT @enfantSage = SageEnfant FROM Enfants WHERE IdEnfant = @enfantId
+	IF (@enfantSage = 0)
+	BEGIN
+		UPDATE Cadeaux SET EtatCadeau = 0 WHERE IdEnfant = @enfantId
+	END
+	ELSE
+	BEGIN
+		UPDATE Cadeaux SET EtatCadeau = 1 WHERE IdEnfant = @enfantId
+		
+		SELECT @poidCadeau = PoidCadeau FROM CadeauX WHERE IdCadeau = @cadeauId
+		IF NOT EXISTS (SELECT * FROM Historique WHERE IdEnfant = @enfantId)
+		BEGIN
+			INSERT INTO Historique (PoidTotalHistorique, AnneeHistorique) VALUES (0, GETDATE(YEAR))
+		END
+
+		IF EXISTS (SELECT * FROM Historique WHERE IdEnfant = @enfantId AND AnneeHistorique = GETDATE(YEAR))
+		BEGIN
+			UPDATE Historique SET (PoidTotalHistorique = PoidTotalHistorique + @poidCadeau) WHERE IdEnfant = @enfantId AND AnneeHistorique = GETDATE(YEAR)
+		END
+		ELSE
+		BEGIN
+			INSERT INTO Historique (PoidTotalHistorique, AnneeHistorique) VALUES (@poidCadeau, GETDATE(YEAR))
+		END
+		
+	END
+END
+GO
+
+
+
+
+CREATE VIEW vuePasDeCadeau
+AS
+SELECT IdEnfant FROM Enfants LEFT JOIN Cadeaux ON Enfants.IdEnfant = Cadeaux.IdEnfant WHERE SageEnfant = 1
+GO
+
+CREATE FONCTION (@enfantNom varchar(30))
+RETURNS TABLE
+AS
+BEGIN
+	RETURN (SELECT NomCadeau FROM Cadeaux INNER JOIN Enfants ON Cadeaux.IdEnfant = Enfants.IdEnfant WHERE EtatCadeau = 1 AND NomEnfant = @enfantNom)
+END
+GO
+
+
+
+CREATE FONCTION (@enfantId int)
+RETURN int
+AS
+BEGIN
+	DECLARE @poidTotal int
+	SELECT @poidTotal = COUNT(PoidTotalHistorique) FROM Historique INNER JOIN Enfants ON Historique.IdEnfant = Enfants.IdEnfant WHERE Historique.IdEnfant = @enfantId
+	RETURN @poidTotal
+END
+GO
+
+
+
+CREATE PROCEDURE sp_ExamenFinal
+@nom varchar(50), @session varchar(6), @note int
+AS
+BEGIN
+	INSERT INTO ExamenFinal (NomEtudiant, Session, Note) VALUES (@nom, @session, @note)
+END
+GO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
