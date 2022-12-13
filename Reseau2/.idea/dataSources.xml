@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="TP2Boucherie.db" uuid="77c27e48-369b-4275-8ed0-cc89736d6de5">
+    <data-source source="LOCAL" name="TP2Boucherie.db" uuid="1f151da0-bb6f-4634-8a57-f9431e62a9b5">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:TP2Boucherie.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/TP2/Agregateur/Database/TP2Boucherie.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

@@ -2,7 +2,10 @@ module TP2
 
 go 1.19
 
-require github.com/pion/dtls/v2 v2.1.5
+require (
+	github.com/gorilla/mux v1.8.0
+	github.com/pion/dtls/v2 v2.1.5
+)
 
 require (
 	github.com/pion/logging v0.2.2 // indirect
