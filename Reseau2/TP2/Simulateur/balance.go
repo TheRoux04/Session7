@@ -17,31 +17,30 @@ func tcpNewConnection(listenerTCP net.Listener, connectionTCPChan chan<- net.Con
 		if err != nil {
 			log.Fatalln(err)
 		}
-		connectionTCPChan <- conn
-
 		if !connect {
+			print("Connect")
 			go balance(balanceChan)
 			connect = true
 		}
+		println(conn.RemoteAddr().String())
+		connectionTCPChan <- conn
+
 	}
 }
 
 func manageTCPConnection(balanceChan <-chan string, connectionTCPChan <-chan net.Conn) {
-	connection := make(map[net.Conn]string)
+	connectionTCP := <-connectionTCPChan
+	println(connectionTCP.RemoteAddr().String())
 	for {
 		select {
-		case newConn := <-connectionTCPChan:
-			connection[newConn] = ""
+		/*case newConn := <-connectionTCPChan:
+		connection[newConn] = ""*/
 		case newWeight := <-balanceChan:
-			if len(connection) > 0 {
-				for conn := range connection {
-					_, err := io.WriteString(conn, newWeight)
-					if err != nil {
-						return
-					}
-					println("Send")
-				}
+			_, err := io.WriteString(connectionTCP, newWeight)
+			if err != nil {
+				return
 			}
+			println("Send")
 		}
 	}
 }

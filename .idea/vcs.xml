@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/BD2/ProgressQuest/ProgressQuest" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/DevelopementMobile/c56-mobile" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/DevelopementMobile/playing-cards-assets" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Reseau2/minica" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/TP2Go" vcs="Git" />
+  </component>
+</project>

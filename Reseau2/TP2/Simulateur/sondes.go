@@ -28,14 +28,14 @@ func manageUDPConnection(sondeChan <-chan string, connectionUDPChan <-chan net.C
 			if len(connection) > 0 {
 				for conn := range connection {
 					conn.Write([]byte(newTemp))
-					println("Send")
+					//println("Send")
 				}
 			}
 		}
 	}
 }
 
-func sondes(sondeChan chan<- string) {
+func sondes(sondeChan chan<- string, id int) {
 	rand.Seed(time.Now().UnixNano())
 	var randTick int
 	var temperature = 10
@@ -43,7 +43,6 @@ func sondes(sondeChan chan<- string) {
 	var changeTemperature = 0
 	var state = ""
 
-	var idSonde = 0
 	var t int64
 	ticker := time.NewTicker(1 * time.Second)
 
@@ -56,9 +55,8 @@ func sondes(sondeChan chan<- string) {
 		}
 
 		if temperature == 10 && changeTemperature == 0 {
-			randTick = rand.Intn(12-1) + 1
-			id++
-			idSonde = id
+			randTick = 1
+			//randTick = rand.Intn(12-1) + 1
 			for i := 0; i < randTick; i++ {
 				<-ticker.C
 			}
@@ -90,11 +88,12 @@ func sondes(sondeChan chan<- string) {
 			}
 
 			<-ticker.C
-			println("Sonde " + strconv.Itoa(idSonde) + " : " + strconv.Itoa(temperature))
+			println("Sonde " + strconv.Itoa(id) + " : " + strconv.Itoa(temperature))
 		}
 		t = time.Now().Unix()
 
-		sondeChan <- strconv.Itoa(idSonde) + "/" + strconv.Itoa(temperature) + "/" + "/" + state + "/" + strconv.FormatInt(t, 10)
+		println(state)
+		sondeChan <- strconv.Itoa(id) + "/" + strconv.Itoa(temperature) + "/" + state + "/" + strconv.Itoa(int(t))
 
 	}
 }

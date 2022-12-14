@@ -1,9 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"crypto/tls"
 	"database/sql"
-	"encoding/binary"
 	"fmt"
 	"log"
 	"strconv"
@@ -16,23 +16,18 @@ func balance(database *sql.DB) {
 	dialer, err := tls.Dial("tcp", "localhost:8081", &config)
 	if err != nil {
 		fmt.Println(err)
-	} else {
-		var t uint8
-		var l uint32
-		for {
-			binary.Read(dialer, binary.BigEndian, &t)
-			if t == 1 {
-				binary.Read(dialer, binary.BigEndian, &l)
-				var v = make([]byte, l)
-				dialer.Read(v)
-				fmt.Print(string(v))
-				tm, pigType, weight, decimals := decode(string(v))
-				insertBalance(tm, pigType, weight, decimals, database)
-
-			}
-		}
 	}
-
+	for {
+		msg, err := bufio.NewReader(dialer).ReadBytes('\n')
+		if err != nil {
+			fmt.Println(err)
+		}
+		println("msg: ", string(msg))
+		//strip the \n
+		msg = msg[:len(msg)-1]
+		tm, pigType, weight, decimals := decode(string(msg))
+		insertBalance(tm, pigType, weight, decimals, database)
+	}
 }
 
 func decode(data string) (string, int, int, int) {
@@ -64,7 +59,10 @@ func decode(data string) (string, int, int, int) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	println("timestamp: ", timestamp)
+	println("pigType: ", int(pigType))
+	println("weight: ", int(weight))
+	println("decimals: ", int(decimals))
 	return timestamp, int(pigType), int(weight), int(decimals)
 }
 

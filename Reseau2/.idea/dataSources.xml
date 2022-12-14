@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="TP2Boucherie.db" uuid="1f151da0-bb6f-4634-8a57-f9431e62a9b5">
+    <data-source source="LOCAL" name="TP2Boucherie.db" uuid="e47d7f2c-4b40-43e0-b5cb-4b2465d49c2c">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

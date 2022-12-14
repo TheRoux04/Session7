@@ -4,24 +4,20 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/pion/dtls/v2"
-	"log"
 	"net"
 )
 
 // https://gosamples.dev/unix-time/ for timestamp
 
-var id = 0
-
 func main() {
-	cert, _ := tls.LoadX509KeyPair("localhost/cert.pem", "localhost/key.pem")
-	config := &dtls.Config{
-		Certificates: []tls.Certificate{cert},
-	}
-	listenerUDP, _ := dtls.Listen("udp", &net.UDPAddr{Port: 8000}, config)
-
-	listenerTCP, err := net.Listen("tcp", ":8001")
+	listenerUDP, err := dtls.Listen("udp", &net.UDPAddr{Port: 8000}, getDtlsCertificat().cfgDtls)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(err)
+	}
+
+	listenerTCP, err := tls.Listen("tcp", "localhost:8081", getCertificat().cfgTls)
+	if err != nil {
+		fmt.Println(err)
 	}
 
 	var sondeChan = make(chan string)
@@ -29,13 +25,13 @@ func main() {
 	var connectionUDPChan = make(chan net.Conn)
 	var connectionTCPChan = make(chan net.Conn)
 
-	for i := 0; i < 10; i++ {
-		go sondes(sondeChan)
+	for i := 0; i < 4; i++ {
+		//go sondes(sondeChan, i)
 	}
 	go udpNewConnection(listenerUDP, connectionUDPChan)
 	go tcpNewConnection(listenerTCP, connectionTCPChan, balanceChan)
 	go manageUDPConnection(sondeChan, connectionUDPChan)
-	go manageTCPConnection(sondeChan, connectionUDPChan)
+	go manageTCPConnection(balanceChan, connectionTCPChan)
 
 	//waitgroup
 	var input string
