@@ -9,8 +9,12 @@ import (
 )
 
 func main() {
-	config := tls.Config{InsecureSkipVerify: true}
-	dialer, err := tls.Dial("tcp", "localhost:8082", &config)
+	cert, err := tls.LoadX509KeyPair("../localhost/cert.pem", "../localhost/key.pem")
+	if err != nil {
+		fmt.Println(err)
+	}
+	tlsCfg := &tls.Config{Certificates: []tls.Certificate{cert}}
+	dialer, err := tls.Dial("tcp", "localhost:8082", tlsCfg)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -58,7 +62,7 @@ func main() {
 
 	// Envoi du message au serveur
 	println(msgToSend)
-	_, err = dialer.Write([]byte(msgToSend))
+	_, err = dialer.Write([]byte(msgToSend + "\n"))
 
 	for {
 		// Lecture de la réponse du serveur
@@ -68,7 +72,6 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(string(buf[:n]))
 	}
 
 }
