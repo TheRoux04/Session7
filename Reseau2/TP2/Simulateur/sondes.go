@@ -1,12 +1,30 @@
 package main
 
 import (
+	"fmt"
+	"github.com/pion/dtls/v2"
 	"log"
 	"math/rand"
 	"net"
 	"strconv"
 	"time"
 )
+
+func sondeMain() {
+	listenerUDP, err := dtls.Listen("udp", &net.UDPAddr{Port: 8000}, getDtlsCertificat().cfgDtls)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	var sondeChan = make(chan string)
+	var connectionUDPChan = make(chan net.Conn)
+
+	for i := 0; i < 4; i++ {
+		go sondes(sondeChan, i)
+	}
+	go udpNewConnection(listenerUDP, connectionUDPChan)
+	go manageUDPConnection(sondeChan, connectionUDPChan)
+}
 
 func udpNewConnection(listenerUDP net.Listener, connectionUDPChan chan<- net.Conn) {
 	for {
@@ -60,11 +78,6 @@ func sondes(sondeChan chan<- string, id int) {
 			for i := 0; i < randTick; i++ {
 				<-ticker.C
 			}
-			/*tm.MoveCursor(1, 1)
-			tm.Clear()
-			tm.Println(string(buf))
-			tm.Flush()
-			time.Sleep(time.Second / 10)*/
 			changeTemperature = 1
 		} else {
 			changeTemperature = rand.Intn(20-10) + 10

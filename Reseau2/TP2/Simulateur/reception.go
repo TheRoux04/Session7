@@ -17,6 +17,13 @@ type Reception struct {
 	Pigget     int    `json:"pigget"`
 }
 
+func receptionMain() {
+	api := newApiReception()
+	go reception(api.ReceptionList, api.Mutex)
+	startApi(api)
+
+}
+
 func newReception(id int) Reception {
 	var timestamp = time.Now().Format("2006-01-02 15:04:05")
 	newRecep := Reception{

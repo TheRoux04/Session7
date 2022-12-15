@@ -7,10 +7,19 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"sync"
 	"time"
 )
 
-func balance(database *sql.DB) {
+type Balance struct {
+	Time     string
+	Type     int64
+	Weight   int64
+	Decimals int64
+}
+
+func balance(wg *sync.WaitGroup, database *sql.DB) {
+	defer wg.Done()
 	fmt.Println("Balance started")
 	config := tls.Config{InsecureSkipVerify: true}
 	dialer, err := tls.Dial("tcp", "localhost:8081", &config)
@@ -25,12 +34,12 @@ func balance(database *sql.DB) {
 		println("msg: ", string(msg))
 		//strip the \n
 		msg = msg[:len(msg)-1]
-		tm, pigType, weight, decimals := decode(string(msg))
-		insertBalance(tm, pigType, weight, decimals, database)
+		newBalance := decode(string(msg))
+		insertBalance(newBalance, database)
 	}
 }
 
-func decode(data string) (string, int, int, int) {
+func decode(data string) Balance {
 	tm, err := strconv.ParseInt(data[0:8], 16, 64)
 	if err != nil {
 		panic(err)
@@ -63,16 +72,17 @@ func decode(data string) (string, int, int, int) {
 	println("pigType: ", int(pigType))
 	println("weight: ", int(weight))
 	println("decimals: ", int(decimals))
-	return timestamp, int(pigType), int(weight), int(decimals)
+
+	return Balance{timestamp, int64(pigType), int64(weight), int64(decimals)}
 }
 
 // insert Balance
-func insertBalance(timestamp string, pigType int, weight int, decimals int, database *sql.DB) {
+func insertBalance(newBalance Balance, database *sql.DB) {
 	statement, err := database.Prepare("INSERT INTO BalancesInfos (timestamp, pigType, weight, decimals) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = statement.Exec(timestamp, pigType, weight, decimals)
+	_, err = statement.Exec(newBalance.Time, newBalance.Type, newBalance.Weight, newBalance.Decimals)
 	if err != nil {
 		return
 	}

@@ -8,9 +8,11 @@ import (
 	"net"
 	"strconv"
 	"strings"
+	"sync"
 )
 
-func sondes(database *sql.DB) {
+func sondes(wg *sync.WaitGroup, database *sql.DB) {
+	defer wg.Done()
 	config := &dtls.Config{
 		InsecureSkipVerify: true,
 	}
@@ -61,7 +63,7 @@ func insertNewCooking(sondeID int, newCooking string, database *sql.DB) {
 	_, err = statement.Exec(strconv.Itoa(sondeID), newCooking)
 
 	if err != nil {
-		//fmt.Println(err)
+		fmt.Println(err)
 		return
 	}
 }
